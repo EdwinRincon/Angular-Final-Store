@@ -1,0 +1,49 @@
+<!-- Acoordeon despliegue de filtros -->
+<mat-accordion>
+  <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+    <mat-expansion-panel-header>
+      <mat-panel-description>
+        Filtrar Productos
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <!--Select Oculto  ng-template para lazy loading -->
+    <ng-template matExpansionPanelContent>
+      <mat-list>
+        <mat-form-field class="col-xs-12 col-sm-6 col-md-3 col-lg-6">
+          <mat-label>Ordenar por precio</mat-label>
+          <mat-select (selectionChange)="sortProductsByPrice()" [(value)]="ascDesc">
+            <mat-option value='asc'>Low to High</mat-option>
+            <mat-option value='desc'>High to Low</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="col-xs-12 col-sm-6 col-md-3 col-lg-6">
+          <mat-label>Filtrar por categoria</mat-label>
+          <mat-select (selectionChange)="sortProductsByCategory()" [(value)]="category">
+            <mat-option value='All'>All</mat-option>
+            <mat-option value='moviles'>Moviles</mat-option>
+            <mat-option value='ordenadores'>Ordenadores</mat-option>
+            <mat-option value='televisores'>Televisores</mat-option>
+            <mat-option value='relojes'>Relojes</mat-option>
+            <mat-option value='auriculares'>Auriculares</mat-option>
+          </mat-select>
+        </mat-form-field>
+          <mat-form-field class="col-xs-12 col-sm-6 col-md-3 col-lg-6">
+            <mat-label>Buscar...</mat-label>
+              <input  matInput autocomplete="off" type="search" (keyup)="search()" [(ngModel)]="texto">
+          </mat-form-field>
+      </mat-list>
+    </ng-template>
+  </mat-expansion-panel>
+</mat-accordion>
+<!-- Spinner Loading -->
+<app-loading-spinner *ngIf="showLoadingSpinner === true"></app-loading-spinner>
+<!-- Lista de productos -->
+<div class="product-grid">
+  <app-product *ngFor="let producto of productos"  [producto]="producto"></app-product>
+</div>
+<!-- Botones Paginacion Productos -->
+<div id="btnPagination">
+    <button (click)="fetchProducts(-9)" mat-raised-button color="warn" id="previousP"><mat-icon>arrow_left</mat-icon>Previous</button>
+    <button (click)="fetchProducts(9)" mat-raised-button color="warn" id="nextP">Next<mat-icon>arrow_right</mat-icon></button>
+</div>
+<button id="upButton" mat-mini-fab color="warn" (click)="toTop()" aria-label="up"><mat-icon>expand_less</mat-icon></button>

@@ -1,0 +1,41 @@
+<!-- Spinner Loading -->
+<app-loading-spinner *ngIf="showLoadingSpinner === true"></app-loading-spinner>
+<form [formGroup]="form" autocomplete="off" (ngSubmit)="sendEmail()">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title><span class="material-icons">email</span></mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div class="row">
+                <div class="col-xs">
+                    <mat-form-field appearance="legacy">
+                        <mat-label>Enter your name</mat-label>
+                        <input formControlName="name" matInput type="text">
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs">
+                    <mat-form-field appearance="legacy">
+                        <mat-label>Enter your email</mat-label>
+                        <input formControlName="email" matInput type="email"/>
+                        <span matSuffix class="material-icons">alternate_email</span>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs">
+                    <mat-form-field hintLabel="Min 100 characters" appearance="legacy">
+                        <mat-label>Enter your message</mat-label>
+                        <textarea formControlName="message" matInput #input maxlength="900" minlength="100"></textarea>
+                        <mat-hint align="end">{{input.value?.length || 0}}/900</mat-hint>
+                    </mat-form-field>
+                </div>
+            </div>
+        </mat-card-content>
+        <mat-card-actions>
+            <button [disabled]="form.invalid" mat-raised-button color="primary" type="submit">Enviar</button>
+        </mat-card-actions>
+    </mat-card>
+
+</form>

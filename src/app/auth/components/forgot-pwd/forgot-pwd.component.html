@@ -1,0 +1,26 @@
+<app-header></app-header>
+<div class="limiter">
+    <div class="container-login100">
+        <div class="wrap-login100">
+            <div class="login100-form-title">
+                <h3>RECUPERAR CONTRASEÑA</h3>
+            </div>
+
+            <form class="login100-form" [formGroup]="form" autocomplete="off">
+                <div class="row">
+                    <div class="col-xs">
+                        <mat-form-field appearance="legacy">
+                            <mat-label>Enter your email</mat-label>
+                            <input formControlName="email" matInput type="email" />
+                            <span matSuffix class="material-icons">email</span>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="container-login100-form-btn">
+                    <button (click)="forgotPwd()" class="login100-form-btn" mat-raised-button color="primary" [disabled]="form.invalid">Continuar</button>
+                    <button  mat-button routerLink="/auth/login" type="button">Volver</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

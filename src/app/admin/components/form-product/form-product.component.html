@@ -1,0 +1,51 @@
+<form [formGroup]="form" (ngSubmit)="saveProduct($event)" autocomplete="off">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Producto</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="row">
+        <div class="col-xs">
+          <mat-form-field>
+            <input placeholder="Name" formControlName="name" matInput type="text">
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs">
+          <mat-form-field>
+            <input placeholder="Price" formControlName="price" matInput type="number">
+          </mat-form-field>
+          <div *ngIf="priceField.errors && priceField.dirty">
+            <p *ngIf="priceField.hasError('price_invalid')">no te debes pasar de 10.000 €</p>
+            <p *ngIf="priceField.hasError('required')">el campo es requerido</p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs">
+          <mat-form-field>
+            <textarea placeholder="Description" formControlName="description" matInput></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs">
+          <mat-form-field>
+            <input placeholder="Category" formControlName="category" matInput type="text">
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs">
+          <img *ngIf="(image$ | async) as image" [src]="image" alt="producto">
+          <input type="file" (change)="uploadFile($event)">
+        </div>
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <button [disabled]="form.invalid" mat-raised-button color="primary" type="submit">Guardar</button>
+    </mat-card-actions>
+  </mat-card>
+  
+</form>

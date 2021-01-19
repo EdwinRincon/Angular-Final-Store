@@ -1,0 +1,48 @@
+<mat-horizontal-stepper>
+  <mat-step>
+    <ng-template matStepLabel>Sus productos</ng-template>
+    <div *ngIf="(products$ | async | cartRepeat ) as products">
+      <p *ngIf="products.length === 0">no hay productos</p>
+      <div class="row" *ngFor="let product of products">
+        <div  *ngIf="product.quantity >0" class="clearfix col-xs-1 col-sm-3 col-md-2">
+          <div class="box">
+            <img class="image" [src]="product.img" alt="producto">
+          </div>
+        </div>
+        <div  *ngIf="product.quantity >0" class="clearfix col-xs-12 col-sm-4 col-md-3">
+          <div class="box">
+            {{ product.name }}
+          </div>
+        </div>
+        <div  *ngIf="product.quantity >0" class="col-xs-12 col-sm-2 col-md-2">
+          <div class="box">
+            {{ product.price | currency }}
+          </div>
+        </div>
+        <div *ngIf="product.quantity >0" class="col-xs-12 col-sm-2 col-md-2">
+          <div class="box">
+            Cantidad:   {{ product.quantity }} 
+          </div>
+        </div>
+        <div *ngIf="product.quantity >0" class="col-xs-12 col-sm-1 col-md-2">
+          <div class="box">
+            <!-- <button mat-raised-button color="primary" (click)="addProduct(product)">+</button> -->
+            <button mat-raised-button color="warn" (click)="deleteProduct(product)">-</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="(products$ | async) as products">
+      <h1 *ngIf="products.length >0">Total a Pagar: {{ totalAPagar | currency }}  </h1>
+    </div>
+  </mat-step>
+  <mat-step [stepControl]=false>
+    <ng-template matStepLabel>Pago</ng-template>
+    <div id="capsula">
+      <div id="paypal-button-container"></div>
+    </div>
+  </mat-step>
+</mat-horizontal-stepper>
+<div *ngIf="(products$ | async) as products">
+  <button *ngIf="products.length > 0"  id="upButton" mat-mini-fab color="warn" (click)="toTop()" aria-label="up"><mat-icon>expand_less</mat-icon></button>
+</div>

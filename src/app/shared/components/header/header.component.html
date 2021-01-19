@@ -1,0 +1,19 @@
+<div class="w3-bar w3-indigo">
+    <div class="header-row">
+    <nav>
+        <a class="w3-bar-item w3-btn" mat-button routerLink="/home" routerLinkActive="active">Home</a>
+        <a class="w3-bar-item w3-btn w3-hide-small" mat-button routerLink="/productos"routerLinkActive="active">Products</a>
+        <a class="w3-bar-item w3-btn w3-hide-small" mat-button routerLink="/contact" routerLinkActive="active">Contact</a>
+        <span class="w3-bar-item w3-right w3-xxlarge w3-hide-large w3-hide-medium material-icons" id="humberger" (click)="hamburger()">menu</span>
+    </nav>
+    <div class="w3-row">
+        <a id="btnCart" routerLink="/order" [matBadge]="total$ | async" mat-raised-button matBadgeColor="warn"><span class="material-icons">shopping_cart</span>Carrito</a>
+    </div>
+    </div>
+</div>
+
+<div id="demo" class="w3-bar-block w3-indigo w3-hide w3-hide-large w3-hide-medium">
+    <a class="w3-bar-item w3-btn" mat-button routerLink="/productos" routerLinkActive="active">Products</a>
+    <a class="w3-bar-item w3-btn" mat-button routerLink="/contact" routerLinkActive="active">Contact</a>
+    <a class="w3-bar-item w3-btn" mat-button (click)="installByUser()" *ngIf="installEvent">Install App</a>
+</div>

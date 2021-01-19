@@ -1,0 +1,27 @@
+form {
+  margin: auto;
+  width: 90%;
+  max-width: 500px;
+  padding: 0px;
+  padding-top: 8px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+mat-card {  
+border: 1px solid;
+border-radius: 5px;
+}
+
+mat-card-header {
+  justify-content: center;
+}
+
+button {
+    width: 100%;
+}
+
+textarea {
+  max-height: 300px;
+}

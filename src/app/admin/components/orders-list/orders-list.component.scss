@@ -1,0 +1,33 @@
+table {
+  width: 100%;
+}
+
+tr.rowsData:hover {
+  background-color: rgba(226, 234, 253, 0.767);
+}
+
+button {
+  min-width: 83px;
+  max-width: 90px;
+  margin-left: 8px;
+}
+
+mat-form-field {
+  width: 30%;
+  min-width: 250px;
+}
+
+#btnPagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 25px;
+}
+
+#nextO {
+  min-width: 111px;
+  margin-left: 10vw;
+}
+
+#previousO {
+  min-width: 111px;
+}

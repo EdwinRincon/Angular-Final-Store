@@ -1,0 +1,47 @@
+<app-header></app-header>
+<div class="limiter">
+    <div class="container-login100">
+        <div class="wrap-login100">
+            <div class="login100-form-title">
+                <h3>LOGIN</h3>
+            </div>
+
+            <form class="login100-form" [formGroup]="form" (ngSubmit)="login($event)" autocomplete="off">
+
+                <div class="row">
+                    <div class="col-xs">
+                        <mat-form-field appearance="legacy">
+                            <mat-label>Enter your email</mat-label>
+                            <input formControlName="email" matInput type="email" />
+                            <span matSuffix class="material-icons">email</span>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="row">
+                        <div class="col-xs">
+                            <mat-form-field appearance="legacy">
+                                <mat-label>Enter your password</mat-label>
+                                <input formControlName="password" matInput [type]="hide ? 'password' : 'text'" />
+                                <mat-error *ngIf="form.controls['password'].errors">Minimo 8 caracteres, 1 mayuscula, 1
+                                    minuscula, 1 numero, máximo 20
+                                    caracteres</mat-error>
+                                <span mat-icon-button matSuffix (click)="hide = !hide"
+                                    [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                                    <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
+                                </span>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container-login100-form-btn">
+                    <button class="login100-form-btn" mat-raised-button color="primary" [disabled]="form.invalid" type="submit">Ingresar</button>
+                    <button routerLink="/auth/forgot" mat-button type="button">&#191;Olvid&oacute; su
+                        contraseña&#63;</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

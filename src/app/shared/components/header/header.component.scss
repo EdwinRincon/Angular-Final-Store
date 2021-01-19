@@ -1,0 +1,35 @@
+.w3-bar > a.active {
+  background-color: rgba(113, 113, 255, 0.288);
+}
+
+.w3-bar {
+  height: 60px;
+}
+
+.w3-row {
+  padding-top: 14px;
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 602px) {
+  #btnCartMenu {
+    margin-bottom: 15px;
+    top: 3px;
+    left: 15px;
+    right: 0px;
+  }
+}
+
+@media (min-width: 600px) {
+.w3-row {
+  display: flex;
+  justify-content: flex-end;
+}
+
+#btnCart {
+margin-right: 30px;
+margin-top: 3px;
+}
+
+}

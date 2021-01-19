@@ -1,0 +1,49 @@
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+        <div class="box">
+          <h3>Productos</h3>
+          <ul>
+            <li>
+              <a routerLink="/productos" [queryParams]="{ type: 'news' }"
+                >Nuevos Productos</a
+              >
+            </li>
+            <li>
+              <a routerLink="/productos" [queryParams]="{ type: 'offer' }"
+                >En oferta</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-xs-12 col-sm-6 col-md-2 col-lg-3">
+        <div class="box">
+          <h3>Acerca de Nosotros</h3>
+          <ul>
+            <li><a routerLink="/about-us">Sobre nosotros</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="box">
+          <h3>Subscripcion Newsletter</h3>
+          <mat-form-field appearance="legacy">
+            <input autocomplete="off" matInput placeholder="Digite su correo" [formControl]="emailField" type="email">
+          </mat-form-field>
+          <button mat-raised-button [disabled]="emailField.invalid" (click)="sendMail()">enviar</button>
+        </div>
+      </div>
+      <div class="col-xs-12 col-sm-6 col-md-1 col-lg-3">
+        <div class="box">
+          <h3>Administracion</h3>
+          <ul>
+            <li><a routerLink="/admin/productos">Store</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="logoImg"><img src="assets/images/logo.png" alt="Logo"></div>
+</footer>
