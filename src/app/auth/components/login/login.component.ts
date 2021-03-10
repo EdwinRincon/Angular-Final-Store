@@ -28,7 +28,9 @@ export class LoginComponent implements OnInit {
     event.preventDefault();
     if (this.form.valid) {
       const value = this.form.value;
-      this.authService.login(value.email, value.password);
+      this.authService.login(value.email, value.password).subscribe(() => {
+        this.router.navigate(['/admin/productos']);
+      })
     }
   }
 

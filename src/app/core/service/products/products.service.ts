@@ -62,8 +62,7 @@ export class ProductsService {
       // The response body may contain clues as to what went wrong,
       Swal.fire({
         title: 'Error!',
-        html:  error.status + error.statusText +
-              '<br></br>Error: ' + error.error.message,
+        html:  error.error.message,
         icon: 'error',
         confirmButtonText: 'Aceptar'
       });
