@@ -23,7 +23,7 @@
         *ngIf="isHandset$ | async">
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
-        <span>FINAL-STORE</span> <p> {{hora}} </p>
+        <span>FINAL-STORE</span> <p> {{hora | async}} </p>
     </mat-toolbar>
     <!-- Add Content Here -->
     <router-outlet></router-outlet>

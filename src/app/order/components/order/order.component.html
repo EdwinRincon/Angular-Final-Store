@@ -6,7 +6,7 @@
       <div class="row" *ngFor="let product of products">
         <div  *ngIf="product.quantity >0" class="clearfix col-xs-1 col-sm-3 col-md-2">
           <div class="box">
-            <img class="image" [src]="product.img" alt="producto">
+            <img class="image" [src]="product.image" alt="producto">
           </div>
         </div>
         <div  *ngIf="product.quantity >0" class="clearfix col-xs-12 col-sm-4 col-md-3">

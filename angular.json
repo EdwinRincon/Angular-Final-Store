@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "final-store2": {
+    "final-store": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/final-store2",
+            "outputPath": "dist/final-store",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -102,21 +102,21 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "final-store2:build"
+            "browserTarget": "final-store:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "final-store2:build:production"
+              "browserTarget": "final-store:build:production"
             },
             "stag": {
-              "browserTarget": "final-store2:build:stag"
+              "browserTarget": "final-store:build:stag"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "final-store2:build"
+            "browserTarget": "final-store:build"
           }
         },
         "test": {
@@ -155,16 +155,16 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "final-store2:serve"
+            "devServerTarget": "final-store:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "final-store2:serve:production"
+              "devServerTarget": "final-store:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "final-store2"
+  "defaultProject": "final-store"
 }

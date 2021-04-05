@@ -54,19 +54,12 @@ export class ClientesService {
 
 
   private handleError(error: HttpErrorResponse) {
-    if (error.error instanceof ErrorEvent) {
-      // A client-side or network error occurred. Handle it accordingly.
-      console.error('An error occurred:', error.error.message);
-    } else {
-      // The backend returned an unsuccessful response code.
-      // The response body may contain clues as to what went wrong,
-      Swal.fire({
-        title: 'Error!',
-        html: error.error.message,
-        icon: 'error',
-        confirmButtonText: 'Aceptar'
-      });
-    }
+    Swal.fire({
+      title: 'Error!',
+      text: error.error.message,
+      icon: 'error',
+      confirmButtonText: 'Aceptar'
+    });
     // return an observable with a user-facing error message
     return throwError('Something bad happened; please try again later.');
   }

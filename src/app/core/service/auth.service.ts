@@ -10,9 +10,10 @@ import { throwError } from 'rxjs';
 })
 export class AuthService {
   headers: HttpHeaders;
+  pass: any;
 
   constructor(private http: HttpClient) {
-    this.headers = new HttpHeaders().set('content-type','application/json')
+    this.headers = new HttpHeaders().set('content-type', 'application/json');
   }
 
   login(email: string, password: string) {
@@ -26,16 +27,12 @@ export class AuthService {
   }
 
   hasPermission() {
-    let pass = false;
-    this.http.get(`${environment.url_api}/hasPermission`, { headers: this.headers }).subscribe(canPass => {
-      canPass === true ? pass === true : pass === false;
-    });
-    return pass;
+    return this.http.get(`${environment.url_api}/hasPermission`, { headers: this.headers });
   }
 
   // cambia contraseña
   resetPassword(token: string, pwd: string) {
-    return this.http.post(`${environment.url_api}/resetPwd?token=${token}`,{pwd}, { headers: this.headers }).pipe(
+    return this.http.post(`${environment.url_api}/resetPwd?token=${token}`, { pwd }, { headers: this.headers }).pipe(
       catchError(this.handleError));
   }
   // envia email para solicitar el cambio
@@ -45,19 +42,12 @@ export class AuthService {
   }
 
   private handleError(error: HttpErrorResponse) {
-    if (error.error instanceof ErrorEvent) {
-      // A client-side or network error occurred. Handle it accordingly.
-      console.error('An error occurred:', error.error.message);
-    } else {
-      // The backend returned an unsuccessful response code.
-      // The response body may contain clues as to what went wrong,
-      Swal.fire({
-        title: 'Error!',
-        text: error.error.message,
-        icon: 'error',
-        confirmButtonText: 'Aceptar'
-      });
-    }
+    Swal.fire({
+      title: 'Error!',
+      text: error.error.message,
+      icon: 'error',
+      confirmButtonText: 'Aceptar'
+    });
     // return an observable with a user-facing error message
     return throwError('Something bad happened; please try again later.');
   }

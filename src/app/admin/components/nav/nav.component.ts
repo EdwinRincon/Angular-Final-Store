@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Observable } from 'rxjs';
+import { Observable, Observer } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 
-import {AuthService} from '@core/service/auth.service';
+import { AuthService } from '@core/service/auth.service';
 
 @Component({
   selector: 'app-nav',
@@ -19,21 +19,19 @@ export class NavComponent {
       map(result => result.matches),
       shareReplay()
     );
-    // hora actual en el header
-    hora: string;
+  // hora actual en el header
+  hora = new Observable<string>((observer: Observer<string>) => {
+    setInterval(() => observer.next(new Date().toLocaleString()), 1000);
+  });
 
   constructor(
     private breakpointObserver: BreakpointObserver,
     private authService: AuthService,
-    private router: Router) {
-      window.setInterval(() => this.hora = new Date().toLocaleString(), 1000);
-    }
+    private router: Router) { }
 
   // Cerrar Sesion
   logout() {
-    this.authService.logout().subscribe(() => {
-      this.router.navigate(['./home']);
-    });
+    this.authService.logout().subscribe();
+    this.router.navigate(['./home']);
   }
-
 }

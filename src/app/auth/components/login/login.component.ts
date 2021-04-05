@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import Swal from 'sweetalert2';
 import { AuthService } from '@core/service/auth.service';
 
 @Component({
@@ -28,9 +27,10 @@ export class LoginComponent implements OnInit {
     event.preventDefault();
     if (this.form.valid) {
       const value = this.form.value;
-      this.authService.login(value.email, value.password).subscribe(() => {
-        this.router.navigate(['/admin/productos']);
-      })
+      this.authService.login(value.email, value.password).subscribe({
+        next: () => this.router.navigate(['/admin/productos'])
+      });
+
     }
   }
 

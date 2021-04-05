@@ -15,7 +15,7 @@ export class ChangePwdComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private route: ActivatedRoute
-  ) { 
+  ) {
     this.buildForm();
   }
 
@@ -34,8 +34,8 @@ export class ChangePwdComponent implements OnInit {
       const token = this.route.snapshot.queryParams.token;
       const pwd = this.form.value.password;
       this.authService.resetPassword(token, pwd).subscribe(() => {
-          this.router.navigate(['/auth/login']);
-        });
-  }
+        this.router.navigate(['/auth/login']);
+      });
+    }
   }
 }

@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
+import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
 
 const routes: Routes = [
@@ -9,7 +9,7 @@ const routes: Routes = [
     }
 ];
 
-@NgModule ({
+@NgModule({
     imports: [
         RouterModule.forChild(routes),
     ],
@@ -18,4 +18,4 @@ const routes: Routes = [
     ]
 })
 
-export class HomeRoutingModule {}
+export class HomeRoutingModule { }
