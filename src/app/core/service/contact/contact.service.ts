@@ -13,8 +13,8 @@ export class ContactService {
 
   }
 
-  sendMessage(email) {
-    return this.http.post(`${environment.url_api}/sendemail`, email).pipe(
+  sendMessage(contacto) {
+    return this.http.post(`${environment.url_api}/sendemail`, contacto).pipe(
       catchError(this.handleError)
     );
   }

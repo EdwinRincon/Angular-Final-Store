@@ -19,14 +19,14 @@ export class ContactComponent implements OnInit {
     this.buildForm();
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   // contruir form con sus validaciones
   private buildForm() {
     this.form = this.formBuilder.group({
       name: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
-      message: ['', [Validators.required, Validators.maxLength(900)]],
+      message: ['', [Validators.required, Validators.maxLength(900), Validators.pattern(/.*\S.*/)]],
     });
   }
 
@@ -39,7 +39,8 @@ export class ContactComponent implements OnInit {
         email: this.form.value.email,
         message: this.form.value.message,
       };
-      this.contactService.sendMessage(user).subscribe(() => {
+      this.contactService.sendMessage(user).subscribe((data: any) => {
+        const { message } = data;
         this.showLoadingSpinner = false;
         // mensaje cuande se envie el correo OK
         const Toast = Swal.mixin({
@@ -51,7 +52,7 @@ export class ContactComponent implements OnInit {
         });
         Toast.fire({
           icon: 'success',
-          title: 'Mensaje enviado'
+          title: message
         });
       });
       this.form.reset(); // vacia los campos del form

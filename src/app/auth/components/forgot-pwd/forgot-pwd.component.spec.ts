@@ -1,5 +1,5 @@
 /* tslint:disable:no-unused-variable */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ForgotPwdComponent } from './forgot-pwd.component';
 
@@ -7,7 +7,7 @@ describe('ForgotPwdComponent', () => {
   let component: ForgotPwdComponent;
   let fixture: ComponentFixture<ForgotPwdComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ForgotPwdComponent ]
     })

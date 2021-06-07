@@ -3,10 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { MyValidators } from '@utils/validators';
 import { AngularFireStorage } from '@angular/fire/storage';
-import { finalize } from 'rxjs/operators';
 import { ProductsService } from '@core/service/products/products.service';
-import { Observable } from 'rxjs';
-import { ThemePalette } from '@angular/material/core';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-product-edit',
@@ -17,10 +15,10 @@ export class ProductEditComponent implements OnInit {
 
   form: FormGroup;
   name: string;
-  image$: Observable<any>;
   available: boolean;
   category = undefined;
-  color: ThemePalette = 'primary';
+  file: File;
+  url = '';
 
   constructor(
     private formBuilder: FormBuilder,
@@ -35,11 +33,10 @@ export class ProductEditComponent implements OnInit {
   ngOnInit() {
     this.activatedRoute.params.subscribe((params: Params) => {
       this.name = params.name;
-      this.productsService.getProduct(this.name)
-        .subscribe(product => {
-          this.form.patchValue(product);
-          this.available = product.available;
-        });
+      this.productsService.getProduct(this.name).subscribe(product => {
+        this.form.patchValue(product);
+        this.available = product.available;
+      });
     });
   }
 
@@ -47,36 +44,42 @@ export class ProductEditComponent implements OnInit {
     this.available ? this.available = false : this.available = true;
   }
   // Actualiza info cliente y navega a la lista de productos
-  saveProduct(event: Event) {
+  async saveProduct(event: Event) {
     event.preventDefault(); // prevenir el evento por defecto en este caso (Submit)
     if (this.form.valid) {
-      const product = this.form.value;
-      this.productsService.updateProduct(this.name, product).subscribe(() => {
-        this.router.navigate(['./admin/productos']);
-      });
+      let product = this.form.value;
+
+
+      // Guarda en Firebase Storage la imagen del producto
+      const filePath = this.form.value.name;
+      const fileRef = this.storage.ref('images/' + filePath);
+      const task = this.storage.upload('images/' + filePath, this.file);
+
+      task.snapshotChanges()
+        .pipe(
+          finalize(() => {
+            fileRef.getDownloadURL().subscribe(url => {
+              this.form.get('image').setValue(url);
+              product = this.form.value;
+
+              this.productsService.updateProduct(this.name, product).subscribe(() => {
+                this.router.navigate(['./admin/productos']);
+              });
+            });
+          })
+        )
+        .subscribe();
     }
   }
 
-  // Guarda en Firebase Storage la imagen del producto
-  // con el nombre del titulo que tenga
-  uploadFile(event) {
-    const file = event.target.files[0];
-    const dir = this.form.value.title;
-    const fileRef = this.storage.ref(dir);
-    const task = this.storage.upload(dir, file);
 
-    // consigo la URL de la imagen para guardar en la BBDD
-    // con sus demas datos...
-    task.snapshotChanges()
-      .pipe(
-        finalize(() => {
-          this.image$ = fileRef.getDownloadURL();
-          this.image$.subscribe(url => {
-            this.form.get('image').setValue(url);
-          });
-        })
-      )
-      .subscribe();
+  uploadFile(event) {
+    this.file = event.target.files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(this.file);
+    reader.onload = (e) => {
+      this.url = e.target.result.toString();
+    };
   }
 
   // Construyo el form con sus validaciones
@@ -84,7 +87,7 @@ export class ProductEditComponent implements OnInit {
     this.form = this.formBuilder.group({
       name: ['', [Validators.required]],
       price: ['', [Validators.required, MyValidators.isPriceValid]],
-      img: [''],
+      image: [''],
       description: ['', [Validators.required]],
       category: ['', [Validators.required]],
       available: ['']

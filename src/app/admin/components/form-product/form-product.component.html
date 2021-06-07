@@ -31,14 +31,21 @@
       </div>
       <div class="row">
         <div class="col-xs">
-          <mat-form-field>
-            <input placeholder="Category" formControlName="category" matInput type="text">
+          <mat-form-field class="col-xs-12 col-sm-6 col-md-3 col-lg-6">
+            <mat-label>Elegir categoria</mat-label>
+            <mat-select formControlName="category">
+              <mat-option value='moviles'>Moviles</mat-option>
+              <mat-option value='ordenadores'>Ordenadores</mat-option>
+              <mat-option value='televisores'>Televisores</mat-option>
+              <mat-option value='relojes'>Relojes</mat-option>
+              <mat-option value='auriculares'>Auriculares</mat-option>
+            </mat-select>
           </mat-form-field>
         </div>
       </div>
       <div class="row">
         <div class="col-xs">
-          <img *ngIf="(image$ | async) as image" [src]="image" alt="producto">
+          <img *ngIf="url != '' " [src]="url" alt="producto">
           <input type="file" (change)="uploadFile($event)">
         </div>
       </div>

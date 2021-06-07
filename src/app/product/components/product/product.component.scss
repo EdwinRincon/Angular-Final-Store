@@ -10,7 +10,10 @@
     transform: translate(-50%, -50%);
   }
 }
-
+mat-card-actions{
+  display: flex;
+  justify-content: center;
+}
 mat-card-actions > a {
   width: 140.83px;
 }

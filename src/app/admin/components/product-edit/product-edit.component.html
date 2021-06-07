@@ -4,7 +4,7 @@
         <mat-card-title>Producto</mat-card-title>
         <div class="row">
           <div class="col-xs">
-            <mat-slide-toggle [color]="color" (change)="cambio()" formControlName="available" >
+            <mat-slide-toggle color="primary" (change)="cambio()" formControlName="available" >
               <p id="disponibleY" *ngIf="available ===true" >DISPONIBLE: SI</p>
               <p id="disponibleN" *ngIf="available ===false">DISPONIBLE: NO</p>
             </mat-slide-toggle>
@@ -53,7 +53,7 @@
         </div>
         <div class="row">
           <div class="col-xs">
-            <img *ngIf="(image$ | async) as image" [src]="image" alt="producto">
+            <img *ngIf="url != '' " [src]="url" alt="producto">
             <input type="file" (change)="uploadFile($event)">
           </div>
         </div>

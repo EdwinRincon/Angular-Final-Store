@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { finalize } from 'rxjs/operators';
 import { MyValidators } from '@utils/validators';
-import {AngularFireStorage} from '@angular/fire/storage';
+import { AngularFireStorage } from '@angular/fire/storage';
 import { ProductsService } from '@core/service/products/products.service';
-import { Observable } from 'rxjs';
+import { finalize } from 'rxjs/internal/operators/finalize';
+
 
 @Component({
   selector: 'app-form-product',
@@ -15,7 +15,9 @@ import { Observable } from 'rxjs';
 export class FormProductComponent implements OnInit {
 
   form: FormGroup;
-  image$: Observable<any>;
+  category = undefined;
+  file: File;
+  url = '';
 
   constructor(
     private formBuilder: FormBuilder,
@@ -26,40 +28,42 @@ export class FormProductComponent implements OnInit {
     this.buildForm();
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
+
+
   // crea un nuevo producto
   saveProduct(event: Event) {
     event.preventDefault(); // previene Submit por defecto
     if (this.form.valid) {
+      this.form.value.image = this.url;
       const product = this.form.value;
-      this.productsService.createProduct(product)
-      .subscribe((newProduct) => {
-      this.router.navigate(['./admin/productos']);
+
+      // Guarda en Firebase Storage la imagen del producto
+
+      const filePath = this.form.value.name;
+      const fileRef = this.storage.ref('images/' + filePath);
+      const task = this.storage.upload('images/' + filePath, this.file);
+
+      task.snapshotChanges().pipe(
+        finalize(() => {
+          fileRef.getDownloadURL().subscribe(url => {
+            this.form.get('image').setValue(url);
+          });
+        }));
+
+      this.productsService.createProduct(product).subscribe(() => {
+        this.router.navigate(['./admin/productos']);
       });
-        }
+    }
   }
 
-  // Guarda en Firebase Storage la imagen del producto
-  // con el nombre del titulo que tenga
   uploadFile(event) {
-    const file = event.target.files[0];
-    const dir = this.form.value.title;
-    const fileRef = this.storage.ref(dir);
-    const task = this.storage.upload(dir, file);
-
-    // consigo la URL de la imagen para guardar en la BBDD
-    // con sus demas datos...
-    task.snapshotChanges()
-    .pipe(
-      finalize(() => {
-        this.image$ = fileRef.getDownloadURL();
-        this.image$.subscribe(url => {
-        this.form.get('image').setValue(url);
-        });
-      })
-    )
-    .subscribe();
+    this.file = event.target.files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(this.file);
+    reader.onload = (e) => {
+      this.url = e.target.result.toString();
+    };
   }
 
   // Creacion del form y sus validaciones

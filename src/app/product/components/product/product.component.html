@@ -1,17 +1,24 @@
-<mat-card>
-    <mat-card-header>
-        <mat-card-title>{{ producto.name | uppercase }}</mat-card-title>
-        <mat-card-subtitle>{{ producto.price | currency }}</mat-card-subtitle>
-    </mat-card-header>
-    <div class="crop-image">
-        <img class="w3-image" [src]="producto.image" alt="producto">
-    </div>
-    <mat-card-content>
-        <p>{{ producto.description | slice:0:75}} [...] </p>
-    </mat-card-content>
-    <mat-card-actions>
-        <a mat-raised-button [routerLink]="['/productos',producto.name]">Ver detalle</a>
-        <!-- <a mat-raised-button routerLink="/productos/{{producto.name}}">Ver detalle</a> -->
-        <button (click)="addCart()" mat-raised-button color="primary">Agregar al carrito</button>
-    </mat-card-actions>
-</mat-card>
+<div class="w3-card-2">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>{{ producto.name | uppercase }}</mat-card-title>
+            <mat-card-subtitle>{{ producto.price | currency }}</mat-card-subtitle>
+            <mat-chip-list *ngIf="producto.available === false" aria-label="Fish selection">
+                <mat-chip color="warn" selected>Out of stock</mat-chip>
+            </mat-chip-list>
+        </mat-card-header>
+        <div class="crop-image">
+            <img class="w3-image" [src]="producto.image" alt="producto">
+        </div>
+        <mat-card-content>
+            <p>{{ producto.description | slice:0:75}} [...] </p>
+        </mat-card-content>
+        <mat-card-actions>
+            <a mat-raised-button color="warn" [routerLink]="['/productos',producto.name]">Ver detalle</a>
+            <!-- <a mat-raised-button routerLink="/productos/{{producto.name}}">Ver detalle</a> -->
+            <button *ngIf="producto.available === true" (click)="addCart()" mat-raised-button color="primary">Agregar al
+                carrito</button>
+        </mat-card-actions>
+
+    </mat-card>
+</div>
