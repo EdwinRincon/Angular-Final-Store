@@ -17,27 +17,27 @@ export class AuthService {
   }
 
   login(email: string, password: string) {
-    return this.http.post(`${environment.url_api}/login`, { email, password }, { headers: this.headers }).pipe(
+    return this.http.post(`${environment.url_api}/auth/login`, { email, password }, { headers: this.headers }).pipe(
       catchError(this.handleError));
   }
 
   logout() {
-    return this.http.post(`${environment.url_api}/logout`, { headers: this.headers }).pipe(
+    return this.http.post(`${environment.url_api}/auth/logout`, { headers: this.headers }).pipe(
       catchError(this.handleError));
   }
 
   hasPermission() {
-    return this.http.get(`${environment.url_api}/hasPermission`, { headers: this.headers });
+    return this.http.get(`${environment.url_api}/auth/hasPermission`, { headers: this.headers });
   }
 
   // cambia contraseña
   resetPassword(token: string, pwd: string) {
-    return this.http.post(`${environment.url_api}/resetPwd?token=${token}`, { pwd }, { headers: this.headers }).pipe(
+    return this.http.post(`${environment.url_api}/auth/resetPwd?token=${token}`, { pwd }, { headers: this.headers }).pipe(
       catchError(this.handleError));
   }
   // envia email para solicitar el cambio
   forgotPassword(email: string) {
-    return this.http.post(`${environment.url_api}/forgot`, { email }, { headers: this.headers }).pipe(
+    return this.http.post(`${environment.url_api}/auth/forgot`, { email }, { headers: this.headers }).pipe(
       catchError(this.handleError));
   }
 

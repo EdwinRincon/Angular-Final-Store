@@ -24,32 +24,32 @@ export class ProductsService {
   }
 
   getProduct(name: string) {
-    return this.http.get<Product>(`${environment.url_api}/producto/${name}`, { headers: this.headers }).pipe(
+    return this.http.get<Product>(`${environment.url_api}/productos/${name}`, { headers: this.headers }).pipe(
       catchError(this.handleError)
     );
   }
 
   createProduct(product: Product) {
-    return this.http.post(`${environment.url_api}/producto/`, product, { headers: this.headers }).pipe(
+    return this.http.post(`${environment.url_api}/productos/`, product, { headers: this.headers }).pipe(
       catchError(this.handleError)
     );
   }
 
   updateProduct(name: string, changes: Partial<Product>) {
-    return this.http.put(`${environment.url_api}/producto/${name}`, changes, { headers: this.headers }).pipe(
+    return this.http.put(`${environment.url_api}/productos/${name}`, changes, { headers: this.headers }).pipe(
       catchError(this.handleError)
     );
   }
 
   deleteProduct(name: string) {
-    return this.http.delete(`${environment.url_api}/producto/${name}`, { headers: this.headers }).pipe(
+    return this.http.delete(`${environment.url_api}/productos/${name}`, { headers: this.headers }).pipe(
       catchError(this.handleError)
     );
   }
 
 
   getNRegistrosProduct() {
-    return this.http.get<number>(`${environment.url_api}/productos/total`, { headers: this.headers });
+    return this.http.get<number>(`${environment.url_api}/productos/total/n`, { headers: this.headers });
   }
 
 

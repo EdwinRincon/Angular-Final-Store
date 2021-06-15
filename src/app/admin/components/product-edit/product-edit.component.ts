@@ -5,6 +5,7 @@ import { MyValidators } from '@utils/validators';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { ProductsService } from '@core/service/products/products.service';
 import { finalize } from 'rxjs/operators';
+import { Product } from '@core/models/product.model';
 
 @Component({
   selector: 'app-product-edit',
@@ -17,7 +18,6 @@ export class ProductEditComponent implements OnInit {
   name: string;
   available: boolean;
   category = undefined;
-  file: File;
   url = '';
 
   constructor(
@@ -44,39 +44,50 @@ export class ProductEditComponent implements OnInit {
     this.available ? this.available = false : this.available = true;
   }
   // Actualiza info cliente y navega a la lista de productos
-  async saveProduct(event: Event) {
+  async saveProduct(event) {
     event.preventDefault(); // prevenir el evento por defecto en este caso (Submit)
     if (this.form.valid) {
-      let product = this.form.value;
+      let product: Product = this.form.value;
 
+      try {
+        const file = event.target.files[0];
+        // Guarda en Firebase Storage la imagen del producto
+        const filePath = this.form.value.name;
+        const fileRef = this.storage.ref('images/' + filePath);
+        const task = this.storage.upload('images/' + filePath, file);
 
-      // Guarda en Firebase Storage la imagen del producto
-      const filePath = this.form.value.name;
-      const fileRef = this.storage.ref('images/' + filePath);
-      const task = this.storage.upload('images/' + filePath, this.file);
-
-      task.snapshotChanges()
-        .pipe(
-          finalize(() => {
-            fileRef.getDownloadURL().subscribe(url => {
-              this.form.get('image').setValue(url);
-              product = this.form.value;
-
-              this.productsService.updateProduct(this.name, product).subscribe(() => {
-                this.router.navigate(['./admin/productos']);
+        task.snapshotChanges()
+          .pipe(
+            finalize(() => {
+              fileRef.getDownloadURL().subscribe(url => {
+                this.form.get('image').setValue(url);
+                product = this.form.value;
+                this.productsService.updateProduct(this.name, product).subscribe(() => {
+                  this.router.navigate(['./admin/productos']);
+                });
               });
-            });
-          })
-        )
-        .subscribe();
+            })
+          )
+          .subscribe();
+
+      } catch (error) {
+        // Si hay error, es porque no se ha subido una nueva imagen.
+        // Enviamos el producto actualizado con la imagen que tenia antes
+        this.productsService.updateProduct(this.name, product).subscribe(() => {
+          this.router.navigate(['./admin/productos']);
+        });
+      }
+
+
+
     }
   }
 
 
   uploadFile(event) {
-    this.file = event.target.files[0];
+    const file = event.target.files[0];
     const reader = new FileReader();
-    reader.readAsDataURL(this.file);
+    reader.readAsDataURL(file);
     reader.onload = (e) => {
       this.url = e.target.result.toString();
     };
