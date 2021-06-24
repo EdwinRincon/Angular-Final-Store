@@ -33,10 +33,10 @@ export class ProductsListComponent implements AfterViewInit {
     private afs: AngularFireStorage,
     @Inject(DOCUMENT) private document: Document,
     private renderer2: Renderer2) {
-      this.ascDesc = 'asc';
-      this.like = '';
-      this.limit = 0;
-      this.category = undefined;
+    this.ascDesc = 'asc';
+    this.like = '';
+    this.limit = 0;
+    this.category = undefined;
   }// inicializo los query para hacer el fetch
 
   ngAfterViewInit() {
@@ -46,7 +46,7 @@ export class ProductsListComponent implements AfterViewInit {
   // N Productos para la paginacion
   numeroTotalProductos() {
     this.productsService.getNRegistrosProduct().subscribe(nTotal => {
-      this.nTotalProductos =  nTotal;
+      this.nTotalProductos = nTotal;
     });
   }
 
@@ -80,7 +80,7 @@ export class ProductsListComponent implements AfterViewInit {
       });
   }
 
-  deleteProduct(name: string, imgTitle: string) {
+  deleteProduct(name: string) {
     // pregunta primero si está seguro de eliminar
     Swal.fire({
       title: 'Estás seguro?',
@@ -95,20 +95,27 @@ export class ProductsListComponent implements AfterViewInit {
       // si confirma hace request a eliminar el producto
       if (result.value) {
         this.productsService.deleteProduct(name).subscribe(() => {
-            const Toast = Swal.mixin({
-              toast: true,
-              position: 'center',
-              showConfirmButton: false,
-              timer: 1500,
-              timerProgressBar: true
-            });
-            Toast.fire({
-              icon: 'success',
-              title: 'Producto eliminado'
-            });
-            this.limit = 0;
-            this.fetchProducts(0);
-            this.afs.ref(imgTitle).delete();
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'center',
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true
+          });
+          Toast.fire({
+            icon: 'success',
+            title: 'Producto eliminado'
+          });
+          this.limit = 0;
+          this.fetchProducts(0);
+          this.afs.ref('images/' + name).delete().toPromise().then(() => {
+            // File deleted successfully
+            console.log('IMAGEN ELIMINADA');
+          }).catch((error) => {
+            // Uh-oh, an error occurred!
+            console.log('error', error.message);
+          });
+
         });
       }
     });

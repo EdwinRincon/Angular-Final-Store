@@ -44,42 +44,13 @@ export class ProductEditComponent implements OnInit {
     this.available ? this.available = false : this.available = true;
   }
   // Actualiza info cliente y navega a la lista de productos
-  async saveProduct(event) {
+  saveProduct(event) {
     event.preventDefault(); // prevenir el evento por defecto en este caso (Submit)
     if (this.form.valid) {
-      let product: Product = this.form.value;
-
-      try {
-        const file = event.target.files[0];
-        // Guarda en Firebase Storage la imagen del producto
-        const filePath = this.form.value.name;
-        const fileRef = this.storage.ref('images/' + filePath);
-        const task = this.storage.upload('images/' + filePath, file);
-
-        task.snapshotChanges()
-          .pipe(
-            finalize(() => {
-              fileRef.getDownloadURL().subscribe(url => {
-                this.form.get('image').setValue(url);
-                product = this.form.value;
-                this.productsService.updateProduct(this.name, product).subscribe(() => {
-                  this.router.navigate(['./admin/productos']);
-                });
-              });
-            })
-          )
-          .subscribe();
-
-      } catch (error) {
-        // Si hay error, es porque no se ha subido una nueva imagen.
-        // Enviamos el producto actualizado con la imagen que tenia antes
-        this.productsService.updateProduct(this.name, product).subscribe(() => {
-          this.router.navigate(['./admin/productos']);
-        });
-      }
-
-
-
+      const product: Product = this.form.value;
+      this.productsService.updateProduct(this.name, product).subscribe(() => {
+        this.router.navigate(['./admin/productos']);
+      });
     }
   }
 
@@ -91,6 +62,17 @@ export class ProductEditComponent implements OnInit {
     reader.onload = (e) => {
       this.url = e.target.result.toString();
     };
+
+    const filePath = this.form.value.name;
+    const fileRef = this.storage.ref('images/' + filePath);
+    const task = this.storage.upload('images/' + filePath, file);
+    task.snapshotChanges().pipe(
+      finalize(() => {
+        fileRef.getDownloadURL().subscribe(url => {
+          this.form.get('image').setValue(url);
+        });
+      })
+    ).subscribe();
   }
 
   // Construyo el form con sus validaciones

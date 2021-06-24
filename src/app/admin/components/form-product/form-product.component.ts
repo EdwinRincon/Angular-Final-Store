@@ -5,6 +5,7 @@ import { MyValidators } from '@utils/validators';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { ProductsService } from '@core/service/products/products.service';
 import { finalize } from 'rxjs/internal/operators/finalize';
+import { Product } from '@core/models/product.model';
 
 
 @Component({
@@ -16,7 +17,6 @@ export class FormProductComponent implements OnInit {
 
   form: FormGroup;
   category = undefined;
-  file: File;
   url = '';
 
   constructor(
@@ -32,24 +32,10 @@ export class FormProductComponent implements OnInit {
 
 
   // crea un nuevo producto
-  saveProduct(event: Event) {
+  saveProduct(event) {
     event.preventDefault(); // previene Submit por defecto
     if (this.form.valid) {
-      this.form.value.image = this.url;
-      const product = this.form.value;
-
-      // Guarda en Firebase Storage la imagen del producto
-
-      const filePath = this.form.value.name;
-      const fileRef = this.storage.ref('images/' + filePath);
-      const task = this.storage.upload('images/' + filePath, this.file);
-
-      task.snapshotChanges().pipe(
-        finalize(() => {
-          fileRef.getDownloadURL().subscribe(url => {
-            this.form.get('image').setValue(url);
-          });
-        }));
+      const product: Product = this.form.value;
 
       this.productsService.createProduct(product).subscribe(() => {
         this.router.navigate(['./admin/productos']);
@@ -58,12 +44,23 @@ export class FormProductComponent implements OnInit {
   }
 
   uploadFile(event) {
-    this.file = event.target.files[0];
+    const file = event.target.files[0];
     const reader = new FileReader();
-    reader.readAsDataURL(this.file);
+    reader.readAsDataURL(file);
     reader.onload = (e) => {
       this.url = e.target.result.toString();
     };
+
+    const filePath = this.form.value.name;
+    const fileRef = this.storage.ref('images/' + filePath);
+    const task = this.storage.upload('images/' + filePath, file);
+    task.snapshotChanges().pipe(
+      finalize(() => {
+        fileRef.getDownloadURL().subscribe(url => {
+          this.form.get('image').setValue(url);
+        });
+      })
+    ).subscribe();
   }
 
   // Creacion del form y sus validaciones

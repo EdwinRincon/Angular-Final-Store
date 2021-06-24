@@ -14,7 +14,7 @@ export class ContactService {
   }
 
   sendMessage(contacto) {
-    return this.http.post(`${environment.url_api}/email/sendemail`, contacto).pipe(
+    return this.http.post(`${environment.url_api}/email`, contacto).pipe(
       catchError(this.handleError)
     );
   }

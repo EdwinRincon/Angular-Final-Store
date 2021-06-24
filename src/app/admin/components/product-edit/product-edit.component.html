@@ -54,7 +54,7 @@
         <div class="row">
           <div class="col-xs">
             <img *ngIf="url != '' " [src]="url" alt="producto">
-            <input type="file" (change)="uploadFile($event)">
+            <input type="file" (change)="uploadFile($event)" accept=".jpg, .jpeg, .png">
           </div>
         </div>
       </mat-card-content>
