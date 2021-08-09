@@ -13,15 +13,15 @@ export class ClientesService {
 
   constructor(private http: HttpClient) { }
 
-  getAllClientes(ord: string, ascDesc: number, like: string, limit: number) {
+  getAllClientes(ascDesc: string, like: string, desde: number) {
     // tslint:disable-next-line: max-line-length
-    return this.http.get<Clientes[]>(`${environment.url_api}/clientes?search=${like}&ordenacion=${ord}&ascDesc=${ascDesc}&limit=${limit}`).pipe(
+    return this.http.get<Clientes[]>(`${environment.url_api}/clientes?search=${like}&ordenar=${ascDesc}&desde=${desde}`).pipe(
       catchError(this.handleError)
     );
   }
 
-  getCliente(id: string) {
-    return this.http.get<Clientes>(`${environment.url_api}/clientes/id/${id}`).pipe(
+  getCliente(payer_id: string) {
+    return this.http.get<Clientes>(`${environment.url_api}/clientes/${payer_id}`).pipe(
       catchError(this.handleError)
     );
   }

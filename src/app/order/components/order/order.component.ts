@@ -2,6 +2,7 @@ import { Component, ViewChild, ElementRef, ErrorHandler, AfterViewInit } from '@
 import { Product } from '@core/models/product.model';
 import { CartService } from '@core/service/cart.service';
 import { Observable } from 'rxjs';
+import { environment } from '@environments/environment';
 import Swal from 'sweetalert2';
 declare var paypal;
 
@@ -59,7 +60,7 @@ export class OrderComponent implements AfterViewInit {
       onApprove: async (data, actions) => {
         actions.order.capture().then(async (details) => {
           // si el pago es aprobado, se intentará guardar en la BBDD los datos del cliente
-          return fetch('https://api-final-store.herokuapp.com/webapi/clientes', {
+          return fetch(`${environment.url_api}/clientes`, {
             method: 'post',
             headers: {
               'content-type': 'application/json'
@@ -73,22 +74,23 @@ export class OrderComponent implements AfterViewInit {
               postal_code: details.purchase_units[0].shipping.address.postal_code,
               city: details.purchase_units[0].shipping.address.admin_area_1
             })
-          }).then((responseCliente) => {
+          }).then(async (responseCliente) => {
             // si los datos del cliente se han guardado, entonces se guardarán los datos de la orden
             if (responseCliente.ok) {
               let createTime: string;
               createTime = details.purchase_units[0].payments.captures[0].create_time;
-              return fetch('https://api-final-store.herokuapp.com/webapi/orders', {
-                method: 'post',
-                headers: {
-                  'content-type': 'application/json'
-                },
-                body: JSON.stringify({
-                  id_order: details.id,
-                  payer_id: details.payer.payer_id,
-                  create_time: createTime.slice(0, 10)
-                })
-              }).then(async (responseOrder) => {
+              try {
+                const responseOrder = await fetch(`${environment.url_api}/orders`, {
+                  method: 'post',
+                  headers: {
+                    'content-type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    id_order: details.id,
+                    payer_id: details.payer.payer_id,
+                    create_time: createTime.slice(0, 10)
+                  })
+                });
                 if (responseOrder.ok) {
                   Swal.fire({
                     title: 'Compra Recibida!',
@@ -100,7 +102,7 @@ export class OrderComponent implements AfterViewInit {
                   // Guardar los productos comprados con su cantidad e ID de orden
                   // tslint:disable-next-line: prefer-for-of
                   for (let index = 0; index < arrayStorage.length; index++) {
-                    await fetch('https://api-final-store.herokuapp.com/webapi/ordersproducto', {
+                    await fetch(`${environment.url_api}/ordersproducto`, {
                       method: 'post',
                       headers: { 'content-type': 'application/json' },
                       body: JSON.stringify({
@@ -111,7 +113,7 @@ export class OrderComponent implements AfterViewInit {
                     });
                   }
                 }
-              }).catch((error) => {
+              } catch (error) {
                 Swal.fire({
                   title: 'Error!',
                   html: '<br></br>Ha habido un problema,<br></br>' +
@@ -120,7 +122,7 @@ export class OrderComponent implements AfterViewInit {
                   icon: 'error',
                   confirmButtonText: 'Aceptar'
                 });
-              });
+              }
               // Mensaje de error sino se ha podido guadar en la BBDD el cliente
             } else {
               Swal.fire({

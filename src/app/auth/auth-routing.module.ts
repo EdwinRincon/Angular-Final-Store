@@ -16,7 +16,7 @@ const routes: Routes = [
     component: ForgotPwdComponent
   },
   {
-    path: 'change',
+    path: 'resetPwd',
     component: ChangePwdComponent
   }
 ];

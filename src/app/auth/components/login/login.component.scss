@@ -1,8 +1,20 @@
-mat-form-field {
-  display: block;
-  width: 99%;
-  margin: 5px 0;
+.form-center{
+  height: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
 }
+
+.login-card {
+  max-width: 400px;
+}
+
+mat-form-field {
+  width: 100%;
+  margin: 4px 0;
+}
+
 mat-icon:hover {
   color: #ee3939;
 }
@@ -18,80 +30,17 @@ button:hover {
   cursor: pointer;
 }
 
-.container-login100 {
-  padding: 15px;
-  width: 100%;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -moz-box;
-  display: -ms-flexbox;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-}
-
-.wrap-login100 {
-  width: 670px;
-  background: rgba(255, 255, 255, 0.247);
-  border-radius: 10px;
-  overflow: hidden;
-  position: relative;
-}
-
-/*==================================================================
-  [ Title form ]*/
-.login100-form-title {
-  background-image: url("../../../../assets/images/bg-form.jpg");
-  width: 100%;
-  position: relative;
-  z-index: 1;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -moz-box;
-  display: -ms-flexbox;
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
-  align-items: center;
-
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  padding: 70px 15px 74px 15px;
-}
-
-h3 {
-  font-size: 30px;
-  color: #fff;
-  text-transform: uppercase;
-  line-height: 1.2;
-  text-align: center;
-}
-
-.login100-form-title::before {
-  content: "";
-  display: block;
-  position: absolute;
-  z-index: -1;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background-color: rgba(54, 84, 99, 0.7);
-}
-
 /*------------------------------------------------------------------
   [ Button ]*/
-.container-login100-form-btn {
-  width: 100%;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -moz-box;
-  display: -ms-flexbox;
-  display: flex;
-  flex-wrap: wrap;
-}
+  .container-login100-form-btn {
+    width: 100%;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    flex-wrap: wrap;
+  }
 
 .login100-form-btn {
   display: -webkit-box;
@@ -104,10 +53,8 @@ h3 {
   padding: 0 20px;
   width: 100%;
   min-width: 160px;
-  height: 50px;
+  height: 40px;
   border-radius: 10px;
-
-  font-family: Poppins-Regular;
   font-size: 16px;
   color: #fff;
   line-height: 1.2;
@@ -116,24 +63,4 @@ h3 {
   -o-transition: all 0.4s;
   -moz-transition: all 0.4s;
   transition: all 0.4s;
-}
-/*------------------------------------------------------------------
-  [ Responsive ]*/
-
-@media (max-width: 576px) {
-  mat-form-field{
-    padding-left: 15px;
-    width: 98%;
-  }
-}
-
-@media (max-width: 480px) {
-  mat-form-field{
-    padding-left: 15px;
-    width: 95%;
-  }
-
-  .container-login100-form-btn {
-    margin-top: 20px;
-  }
 }

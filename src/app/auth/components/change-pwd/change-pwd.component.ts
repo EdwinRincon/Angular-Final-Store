@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '@core/service/auth.service';
-
+import Swal from 'sweetalert2';
 @Component({
   templateUrl: './change-pwd.component.html',
   styleUrls: ['./change-pwd.component.scss']
@@ -31,11 +31,25 @@ export class ChangePwdComponent implements OnInit {
 
   changePwd() {
     if (this.form.valid) {
-      const token = this.route.snapshot.queryParams.token;
-      const pwd = this.form.value.password;
-      this.authService.resetPassword(token, pwd).subscribe(() => {
-        this.router.navigate(['/auth/login']);
-      });
+      const password = this.form.value.password;
+      this.route.queryParamMap.subscribe((params) => {
+
+        this.authService.resetPassword(params.get('token'), password).subscribe((response: any) => {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-right',
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true
+          });
+          Toast.fire({
+            icon: 'success',
+            title: response.message,
+          });
+          this.form.reset();
+        });
+      }
+      );
     }
   }
 }

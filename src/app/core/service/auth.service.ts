@@ -31,8 +31,8 @@ export class AuthService {
   }
 
   // cambia contraseña
-  resetPassword(token: string, pwd: string) {
-    return this.http.post(`${environment.url_api}/auth/resetPwd?token=${token}`, { pwd }, { headers: this.headers }).pipe(
+  resetPassword(token: string, password: string) {
+    return this.http.post(`${environment.url_api}/auth/resetPwd?token=${token}`, { password }, { headers: this.headers }).pipe(
       catchError(this.handleError));
   }
   // envia email para solicitar el cambio

@@ -12,7 +12,7 @@ export class ClientesListComponent implements AfterViewInit {
 
   // QueryParams
   ord: string;
-  ascDesc: number;
+  ascDesc: string;
   like: string;
   limit: number;
   // search
@@ -38,7 +38,7 @@ export class ClientesListComponent implements AfterViewInit {
               private renderer2: Renderer2,
               @Inject(DOCUMENT) private document: Document) {
     this.ord = 'city';
-    this.ascDesc = 0;
+    this.ascDesc = 'asc';
     this.like = null;
     this.limit = 0;
   }// inicializo los query para hacer el fetch
@@ -70,17 +70,16 @@ export class ClientesListComponent implements AfterViewInit {
   }
 
   // traer array de clientes
-  fetchClientes(limit: number) {
-    this.limit += limit;
+  fetchClientes(desde: number) {
 
     // spin mientras carga los datos
     this.showLoadingSpinner = true;
     // desaparece la paginacion mientras cargan  los datos
     this.renderer2.setStyle(this.document.getElementById('nextC'), 'display', 'none');
     this.renderer2.setStyle(this.document.getElementById('previousC'), 'display', 'none');
-
+// ascDesc: string, like: string, desde: number
     this.clientesService
-      .getAllClientes(this.ord, this.ascDesc, this.like, this.limit)
+      .getAllClientes(this.ascDesc, this.like, desde)
       .subscribe((clientes) => {
         this.showLoadingSpinner = false;
         this.clientes = clientes;
