@@ -36,9 +36,6 @@ export class ClientesListComponent implements AfterViewInit {
   // loading message
   showLoadingSpinner = true;
 
-  
-
-
   constructor(private clientesService: ClientesService) {
     this.ascDesc = 'asc';
     this.like = null;
@@ -104,7 +101,7 @@ export class ClientesListComponent implements AfterViewInit {
       this.like = this.texto;
       this.fetchClientes(0);
     } else {
-      this.like = null;
+      this.like = '';
       this.fetchClientes(0);
     }
   }

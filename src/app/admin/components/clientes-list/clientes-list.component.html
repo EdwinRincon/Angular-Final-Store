@@ -9,7 +9,7 @@
 <!-- Spinner Loading -->
 <app-loading-spinner *ngIf="showLoadingSpinner === true"></app-loading-spinner>
 <div class="mat-elevation-z1">
-<table mat-table [dataSource]="clientes" class="mat-elevation-z1">
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z1">
   <ng-container matColumnDef="id">
     <th mat-header-cell *matHeaderCellDef> ID </th>
     <td mat-cell *matCellDef="let clientes"> {{clientes.payer_id}} </td>
@@ -48,9 +48,4 @@
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr class="rowsData" mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
-</div>
-<!-- Botones Paginacion Tabla -->
-<div id="btnPagination">
-  <button (click)="fetchClientes(-9)" mat-raised-button color="warn" id="previousC"><mat-icon>arrow_left</mat-icon>Previous</button>
-  <button (click)="fetchClientes(9)" mat-raised-button color="warn" id="nextC">Next<mat-icon>arrow_right</mat-icon></button>
 </div>
