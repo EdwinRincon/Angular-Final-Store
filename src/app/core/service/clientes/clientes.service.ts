@@ -47,7 +47,7 @@ export class ClientesService {
 
 
   getNRegistrosCliente() {
-    return this.http.get<number>(`${environment.url_api}/clientes/total`).pipe(
+    return this.http.get<number>(`${environment.url_api}/clientes/total/n`).pipe(
       catchError(this.handleError)
     );
   }

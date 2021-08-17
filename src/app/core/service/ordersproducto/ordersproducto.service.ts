@@ -43,7 +43,7 @@ export class OrdersproductoService {
   }
 
   getNRegistrosOrdesProducto() {
-    return this.http.get<number>(`${environment.url_api}/ordersproducto/total`).pipe(
+    return this.http.get<number>(`${environment.url_api}/ordersproducto/total/n`).pipe(
       catchError(this.handleError)
     );
   }

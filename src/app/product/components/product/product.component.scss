@@ -21,36 +21,6 @@ mat-card-content > p {
   height: 33.6px;
 }
 
-@media (min-width: 576px) {
-  mat-card {
-    height: 660px;
-  }
-  mat-card-actions {
-    padding-top: 80px;
-  }
-}
-
-@media (min-width: 856px) {
-  mat-card {
-    height: 545px;
-  }
-  mat-card-actions {
-    padding-top: 25px;
-    margin-left: -10px;
-  }
-  mat-card-actions > a {
-    width: 90px;
-  }
-}
-
-@media (min-width: 982px) {
-  mat-card-actions > a {
-    width: 140.83px;
-  }
-  mat-card {
-    height: 510px;
-  }
-}
 
 @media screen and (max-width: 415px) {
   .crop-image {

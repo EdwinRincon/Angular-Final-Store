@@ -14,11 +14,9 @@
             <p>{{ producto.description | slice:0:75}} [...] </p>
         </mat-card-content>
         <mat-card-actions>
-            <a mat-raised-button color="warn" [routerLink]="['/productos',producto.name]">Ver detalle</a>
-            <!-- <a mat-raised-button routerLink="/productos/{{producto.name}}">Ver detalle</a> -->
-            <button *ngIf="producto.available === true" (click)="addCart()" mat-raised-button color="primary">Agregar al
-                carrito</button>
-        </mat-card-actions>
+                <a mat-raised-button color="warn" [routerLink]="['/productos',producto.name]">Ver detalle</a>
+                <button *ngIf="producto.available === true" (click)="addCart()" mat-raised-button color="primary">Agregar al carrito</button>
+            </mat-card-actions>
 
     </mat-card>
 </div>

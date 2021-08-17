@@ -1,27 +1,16 @@
-import { Component, Renderer2, Inject, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, ViewChild } from '@angular/core';
 import { ClientesService } from '@core/service/clientes/clientes.service';
-import { DOCUMENT } from '@angular/common';
 import Swal from 'sweetalert2';
+import { Clientes } from '@core/models/clientes.model';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 @Component({
   selector: 'app-clientes-list',
   templateUrl: './clientes-list.component.html',
   styleUrls: ['./clientes-list.component.scss'],
 })
 export class ClientesListComponent implements AfterViewInit {
-  clientes = [];
-
-  // QueryParams
-  ord: string;
-  ascDesc: string;
-  like: string;
-  limit: number;
-  // search
-  texto: string;
-  // numero total de registros en clientes
-  nTotalClientes: number;
-  // loading message
-  showLoadingSpinner = true;
-
   displayedColumns: string[] = [
     'id',
     'name',
@@ -32,15 +21,27 @@ export class ClientesListComponent implements AfterViewInit {
     'city',
     'actions'
   ];
+  dataSource: MatTableDataSource<Clientes>;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+  // QueryParams
+  ord: string;
+  ascDesc: string;
+  like: string;
+  category: string;
+  // search
+  texto: string;
+  // numero total de registros en productos
+  nTotalClientes: number;
+  // loading message
+  showLoadingSpinner = true;
+
+  
 
 
-  constructor(private clientesService: ClientesService,
-              private renderer2: Renderer2,
-              @Inject(DOCUMENT) private document: Document) {
-    this.ord = 'city';
+  constructor(private clientesService: ClientesService) {
     this.ascDesc = 'asc';
     this.like = null;
-    this.limit = 0;
   }// inicializo los query para hacer el fetch
 
   ngAfterViewInit() {
@@ -55,35 +56,19 @@ export class ClientesListComponent implements AfterViewInit {
     });
   }
 
-  paginacion(elementos: number) {
-    if (elementos < 9) {
-    this.renderer2.setStyle(this.document.getElementById('nextC'), 'display', 'none');
-    } else {
-    this.renderer2.setStyle(this.document.getElementById('nextC'), 'display', 'block');
-    }
-    // oculta los botones o los muestra si estan al final del limite de registros
-    if (this.limit <= 0) {
-      this.renderer2.setStyle(this.document.getElementById('previousC'), 'display', 'none');
-    } else {
-      this.renderer2.setStyle(this.document.getElementById('previousC'), 'display', 'block');
-    }
-  }
-
   // traer array de clientes
   fetchClientes(desde: number) {
 
     // spin mientras carga los datos
     this.showLoadingSpinner = true;
-    // desaparece la paginacion mientras cargan  los datos
-    this.renderer2.setStyle(this.document.getElementById('nextC'), 'display', 'none');
-    this.renderer2.setStyle(this.document.getElementById('previousC'), 'display', 'none');
-// ascDesc: string, like: string, desde: number
+    // ascDesc: string, like: string, desde: number
     this.clientesService
       .getAllClientes(this.ascDesc, this.like, desde)
       .subscribe((clientes) => {
         this.showLoadingSpinner = false;
-        this.clientes = clientes;
-        this.paginacion(clientes.length);
+        this.dataSource = new MatTableDataSource(clientes);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
       });
   }
 
@@ -101,13 +86,12 @@ export class ClientesListComponent implements AfterViewInit {
     }).then((result) => {
       // si confirma hace request a eliminar el cliente
       if (result.value) {
-        this.clientesService.deleteCliente(payerId).subscribe(() =>  {
+        this.clientesService.deleteCliente(payerId).subscribe(() => {
           Swal.fire(
             'Eliminado!',
             'El registro se ha eliminado',
             'success'
           );
-          this.limit = 0;
           this.fetchClientes(0);
         });
       }
@@ -118,11 +102,9 @@ export class ClientesListComponent implements AfterViewInit {
   search() {
     if (this.texto.length > 0) {
       this.like = this.texto;
-      this.limit = 0;
       this.fetchClientes(0);
     } else {
       this.like = null;
-      this.limit = 0;
       this.fetchClientes(0);
     }
   }

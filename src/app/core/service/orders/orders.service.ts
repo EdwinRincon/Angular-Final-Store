@@ -45,7 +45,7 @@ export class OrdersService {
   }
 
   getNRegistrosOrders() {
-    return this.http.get<number>(`${environment.url_api}/orders/total`).pipe(
+    return this.http.get<number>(`${environment.url_api}/orders/total/n`).pipe(
       catchError(this.handleError)
     );
   }

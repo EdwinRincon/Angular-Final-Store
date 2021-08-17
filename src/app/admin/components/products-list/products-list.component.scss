@@ -5,33 +5,18 @@ table {
 tr.rowsData:hover {
   background-color: rgba(226, 234, 253, 0.767);
 }
+th.mat-sort-header-sorted {
+  color: black;
+}
 
 button {
-  min-width: 83px;
   max-width: 90px;
   margin-left: 8px;
 }
-.container-fluid {
+.container {
   margin-top: 8px;
 }
 
 mat-form-field {
-  width: 30%;
   min-width: 250px;
-}
-
-#btnPagination {
-  display: flex;
-  justify-content: center;
-  margin-top: 25px;
-}
-
-
-#nextPAdm {
-  min-width: 111px;
-  margin-left: 10vw;
-}
-
-#previousPAdm {
-min-width: 111px;
 }
