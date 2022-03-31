@@ -4,11 +4,17 @@
   overflow: hidden;
   position: relative;
   img {
+    display: block;
+    max-width:300px;
+    max-height:300px;
+    width: auto;
+    height: auto; 
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
   }
+
 }
 mat-card-actions{
   display: flex;
@@ -19,11 +25,4 @@ mat-card-actions > a {
 }
 mat-card-content > p {
   height: 33.6px;
-}
-
-
-@media screen and (max-width: 415px) {
-  .crop-image {
-      max-width: 340px;
-  }
 }

@@ -1,8 +1,11 @@
-import { Component, Renderer2, Inject, AfterViewInit } from '@angular/core';
+import { Component, Inject, AfterViewInit, ViewChild } from '@angular/core';
 import { Product } from '@core/models/product.model';
 import { ProductsService } from '@core/service/products/products.service';
 import { DOCUMENT } from '@angular/common';
 
+
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 @Component({
   selector: 'app-products',
   templateUrl: './products.container.html',
@@ -11,77 +14,69 @@ import { DOCUMENT } from '@angular/common';
 
 // tslint:disable-next-line: component-class-suffix
 export class ProductsContainer implements AfterViewInit {
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  dataSource: MatTableDataSource<Product>;
   panelOpenState = false;
   productos: Product[] = [];
   // QueryParams
-  ord: string;
   ascDesc: string;
-  like: string;
-  limit: number;
   category: string;
-  // search
-  texto: string;
-  // numero total de registros en productos
-  nTotalProductos: number;
+  search: string;
+  page: number;
+  skip: number;
   // loading message
   showLoadingSpinner = true;
+  // paginacion
+  pageEvent: PageEvent;
 
 
-  constructor(private productsService: ProductsService,
-              @Inject(DOCUMENT) private document: Document,
-              private renderer2: Renderer2) {
+  constructor(private productsService: ProductsService, @Inject(DOCUMENT) private document: Document) {
     this.ascDesc = 'asc';
-    this.like = '';
-    this.limit = 0;
+    this.search = '';
+    this.skip = 0;
+    this.page = 0;
     this.category = undefined;
   }// inicializo los query para hacer el fetch
 
   ngAfterViewInit() {
-    this.fetchProducts(0); // todos los productos
-    this.numeroTotalProductos();  // number
-  }
-  // N Productos para la paginacion
-  numeroTotalProductos() {
-    this.productsService.getNRegistrosProduct().subscribe(nTotal => {
-      this.nTotalProductos = nTotal;
-    });
+    this.fetchProducts(); // todos los productos
   }
 
-  paginacion(elementos: number) {
-    if (elementos < 9) {
-    this.renderer2.setStyle(this.document.getElementById('nextP'), 'display', 'none');
-    } else {
-    this.renderer2.setStyle(this.document.getElementById('nextP'), 'display', 'block');
-    }
-    // oculta los botones o los muestra si estan al final del limite de registros
-    if (this.limit <= 0) {
-      this.renderer2.setStyle(this.document.getElementById('previousP'), 'display', 'none');
-    } else {
-      this.renderer2.setStyle(this.document.getElementById('previousP'), 'display', 'block');
-    }
-  }
-
-  fetchProducts(desde: number) {
-
+  fetchProducts() {
     // spin mientras carga los datos
     this.showLoadingSpinner = true;
-    // desaparece la paginacion mientras cargan  los datos
-    this.renderer2.setStyle(this.document.getElementById('nextP'), 'display', 'none');
-    this.renderer2.setStyle(this.document.getElementById('previousP'), 'display', 'none');
-    this.productsService.getAllProducts(this.ascDesc, this.category, this.like, desde)
+    this.productsService.getAllProducts(this.ascDesc, this.category, this.search, this.page, this.skip)
       .subscribe(productos => {
         this.showLoadingSpinner = false;
-        this.productos = productos;
-        this.paginacion(productos.length);
+        this.dataSource = new MatTableDataSource(productos);
+        this.dataSource.paginator = this.paginator;
+        this.productos = productos.slice(0, this.skip === 0 ? 6 : this.skip);
       });
     this.toTop();
   }
 
+  getServerData(event?: PageEvent): PageEvent {
+    // spin mientras carga los datos
+    this.showLoadingSpinner = true;
+    this.page = event.pageIndex;
+    this.skip = event.pageSize;
+    this.productsService.getAllProducts(this.ascDesc, this.category, this.search, this.page, this.skip).subscribe(
+      productos => {
+        this.showLoadingSpinner = false;
+        this.productos = productos.slice(0, this.skip === 0 ? 6 : this.skip);
+      }
+    );
+    return event;
+  }
+
   // Ordenar productos por precio
   sortProductsByPrice() {
-    this.productsService.getAllProducts(this.ascDesc, this.category, this.like, 0)
+    this.productsService.getAllProducts(this.ascDesc, this.category, this.search, this.page, this.skip)
       .subscribe(productos => {
-        this.productos = productos;
+        this.productos = productos.slice(0, this.skip === 0 ? 6 : this.skip);
+        this.pageEvent.pageIndex = this.page;
+        this.pageEvent.pageSize = this.skip;
       });
   }
 
@@ -90,19 +85,18 @@ export class ProductsContainer implements AfterViewInit {
     if (this.category === 'All') {
       this.category = undefined;
     }
-    this.fetchProducts(0);
+    this.page = 0;
+    this.skip = 0;
+    this.fetchProducts();
   }
 
   // filtro de busqueda
-  search() {
-    if (this.texto.length > 0) {
-      this.like = this.texto;
-      this.limit = 0;
-      this.fetchProducts(0);
+  searchFilter() {
+    if (this.search.length > 0) {
+      this.fetchProducts();
     } else {
-      this.like = '';
-      this.limit = 0;
-      this.fetchProducts(0);
+      this.search = '';
+      this.fetchProducts();
     }
   }
 

@@ -1,7 +1,11 @@
-import { Component, Renderer2, Inject, AfterViewInit } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import { Component, AfterViewInit, ViewChild } from '@angular/core';
 import { OrdersproductoService } from '@core/service/ordersproducto/ordersproducto.service';
 import Swal from 'sweetalert2';
+import {Ordersproducto} from '@core/models/ordersproducto.model';
+
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 @Component({
   selector: 'app-ordersproducto-list',
   templateUrl: './ordersproducto-list.component.html',
@@ -9,77 +13,41 @@ import Swal from 'sweetalert2';
 })
 export class OrdersproductoListComponent implements AfterViewInit {
 
-  ordersProducto = [];
+  displayedColumns: string[] = ['id_order', 'payer_id', 'name', 'cantidad', 'actions'];
+  dataSource: MatTableDataSource<Ordersproducto>;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
 
   // QueryParams
-  ord: string;
-  ascDesc: number;
-  like: string;
-  limit: number;
-  // search
-  texto: string;
-  // numero totla de registros en clientes
-  nTotalOrdersProducto: number;
+  ascDesc: string;
+  search: string;
   // loading message
   showLoadingSpinner = true;
 
-  displayedColumns: string[] = ['id_order', 'payer_id', 'idProduct', 'cantidad', 'actions'];
-
-  constructor(private ordersproductoService: OrdersproductoService,
-              @Inject(DOCUMENT) private document: Document,
-              private renderer2: Renderer2 ) {
-                this.ord = null;
-                this.ascDesc = 0;
-                this.like = null;
-                this.limit = 0;
-}// inicializo los query para hacer el fetch
+  constructor(private ordersproductoService: OrdersproductoService) {
+    this.ascDesc = 'asc';
+    this.search = '';
+  }
 
   ngAfterViewInit() {
-    this.fetchOrdersProducto(0); // todos los ordersproducto
-    this.numeroTotalOrdersProducto(); // number
-  }
-  // N OrdersProducto para la paginacion
-  numeroTotalOrdersProducto() {
-    this.ordersproductoService.getNRegistrosOrdesProducto()
-    .subscribe(nTotal => {
-      this.nTotalOrdersProducto = nTotal;
-    });
-  }
-
-  paginacion(elementos: number) {
-    if (elementos < 9) {
-      this.renderer2.setStyle(this.document.getElementById('nextOP'), 'display', 'none');
-    } else {
-      this.renderer2.setStyle(this.document.getElementById('nextOP'), 'display', 'block');
-    }
-    // oculta los botones o los muestra si estan al final del limite de registros
-    if (this.limit <= 0) {
-      this.renderer2.setStyle(this.document.getElementById('previousOP'), 'display', 'none');
-    } else {
-      this.renderer2.setStyle(this.document.getElementById('previousOP'), 'display', 'block');
-    }
+    this.fetchOrdersProducto(); // todos los ordersproducto
   }
 
   // traer array de ordersproducto
-  fetchOrdersProducto(limit: number) {
-    this.limit += limit;
-
+  fetchOrdersProducto() {
     // spin mientras carga los datos
     this.showLoadingSpinner = true;
-    // desaparece la paginacion mientras cargan  los datos
-    this.renderer2.setStyle(this.document.getElementById('nextOP'), 'display', 'none');
-    this.renderer2.setStyle(this.document.getElementById('previousOP'), 'display', 'none');
-
-    this.ordersproductoService.getAllOrdersProducto(this.ord, this.ascDesc, this.like, this.limit)
-    .subscribe(ordersproducto => {
-      this.showLoadingSpinner = false;
-      this.ordersProducto = ordersproducto;
-      this.paginacion(ordersproducto.length);
-    });
+    this.ordersproductoService.getAllOrdersProducto(this.ascDesc, this.search)
+      .subscribe(ordersproducto => {
+        this.showLoadingSpinner = false;
+        this.dataSource = new MatTableDataSource(ordersproducto);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+      });
   }
 
 
-  deleteOrdersProducto(idOrder: string, idProduct: string) {
+  deleteOrdersProducto(idOrder: string, name: string) {
     // pregunta primero si está seguro de eliminar
     Swal.fire({
       title: 'Estás seguro?',
@@ -91,33 +59,29 @@ export class OrdersproductoListComponent implements AfterViewInit {
       cancelButtonText: 'Cancelar',
       confirmButtonText: 'Sí, Eliminar!'
     }).then((result) => {
-       // si confirma hace request a eliminar el cliente
+      // si confirma hace request a eliminar el cliente
       if (result.value) {
-        this.ordersproductoService.deleteOrdersProducto(idOrder, idProduct)
-        .subscribe(rta => {
-          Swal.fire(
-            'Eliminado!',
-            'El registro se ha eliminado',
-            'success'
-          );
-          this.limit = 0;
-          this.fetchOrdersProducto(0);
-        });
+        this.ordersproductoService.deleteOrdersProducto(idOrder, name)
+          .subscribe(rta => {
+            Swal.fire(
+              'Eliminado!',
+              'El registro se ha eliminado',
+              'success'
+            );
+            this.fetchOrdersProducto();
+          });
       }
     });
   }
 
-  // filtro de busqueda
-  search() {
-    if (this.texto.length > 0) {
-      this.like = this.texto;
-      this.limit = 0;
-      this.fetchOrdersProducto(0);
-    } else {
-      this.like = null;
-      this.limit = 0;
-      this.fetchOrdersProducto(0);
+    // filtro de busqueda
+    searchFilter() {
+      if (this.search.length > 0) {
+        this.fetchOrdersProducto();
+      } else {
+        this.search = '';
+        this.fetchOrdersProducto();
+      }
     }
-  }
 
 }

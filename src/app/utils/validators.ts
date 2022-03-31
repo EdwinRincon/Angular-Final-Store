@@ -5,7 +5,7 @@ export class MyValidators {
     // los productos al crearlos o editarlos
     static isPriceValid(control: AbstractControl) {
         const value = control.value;
-        if (value > 10000 ) {
+        if (value > 10000 || value <= 0) {
             return {price_invalid: true};
         }
         return null;

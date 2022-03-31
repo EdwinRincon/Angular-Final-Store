@@ -1,43 +1,42 @@
-
-<div class="container-fluid">
-  <mat-form-field class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+<div class="container">
+  <mat-form-field class="col-xs-12 col-sm-6 col-md-3 col-lg-6">
     <mat-label>Buscar...</mat-label>
-      <input matInput autocomplete="off" type="search" (keyup)="search()" [(ngModel)]="texto">
+    <input matInput autocomplete="off" type="search" (keyup)="searchFilter()" [(ngModel)]="search" #input>
   </mat-form-field>
 </div>
 <!-- Spinner Loading -->
 <app-loading-spinner *ngIf="showLoadingSpinner === true"></app-loading-spinner>
 <div class="mat-elevation-z1">
-<table mat-table [dataSource]="ordersProducto" class="mat-elevation-z1">
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z1" matSort>
   <ng-container matColumnDef="id_order">
-    <th mat-header-cell *matHeaderCellDef> ID Order </th>
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> ID Order </th>
     <td mat-cell *matCellDef="let ordersProducto"> {{ordersProducto.id_order}} </td>
   </ng-container>
   <ng-container matColumnDef="payer_id">
-    <th mat-header-cell *matHeaderCellDef> Payer ID </th>
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Payer ID </th>
     <td mat-cell *matCellDef="let ordersProducto"> {{ordersProducto.payer_id}} </td>
   </ng-container>
-  <ng-container matColumnDef="idProduct">
-    <th mat-header-cell *matHeaderCellDef> ID Product </th>
-    <td mat-cell *matCellDef="let ordersProducto"> {{ordersProducto.idProduct}} </td>
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Product name</th>
+    <td mat-cell *matCellDef="let ordersProducto"> {{ordersProducto.name}} </td>
   </ng-container>
   <ng-container matColumnDef="cantidad">
-    <th mat-header-cell *matHeaderCellDef> Cantidad Comprada </th>
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Cantidad Comprada </th>
     <td mat-cell *matCellDef="let ordersProducto"> {{ordersProducto.cantidad}} </td>
   </ng-container>
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef> Actions </th>
     <td mat-cell *matCellDef="let ordersProducto"> 
-      <button mat-raised-button color="primary" [routerLink]="['edit', ordersProducto.id_order, ordersProducto.idProduct]">Editar <span class="material-icons">edit</span></button> 
-    <button mat-raised-button color="warn" (click)="deleteOrdersProducto(ordersProducto.id_order,ordersProducto.idProduct)">Eliminar<span class="material-icons">delete</span></button>   
+      <button mat-raised-button color="primary" [routerLink]="['edit', ordersProducto.id_order, ordersProducto.name]"><span class="material-icons">edit</span></button> 
+    <button mat-raised-button color="warn" (click)="deleteOrdersProducto(ordersProducto.id_order,ordersProducto.name)"><span class="material-icons">delete</span></button>   
     </td>
   </ng-container>
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr class="rowsData" mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <!-- Row shown when there is no matching data. -->
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+    </tr>
 </table>
-</div>
-<!-- Botones Paginacion Tabla -->
-<div id="btnPagination">
-  <button (click)="fetchOrdersProducto(-9)" mat-raised-button color="warn" id="previousOP"><mat-icon>arrow_left</mat-icon>Previous</button>
-  <button (click)="fetchOrdersProducto(9)" mat-raised-button color="warn" id="nextOP">Next<mat-icon>arrow_right</mat-icon></button>
+<mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
 </div>

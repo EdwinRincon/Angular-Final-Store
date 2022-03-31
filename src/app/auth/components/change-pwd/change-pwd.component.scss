@@ -1,8 +1,10 @@
 .form-center{
-  height: 80%;
+  /* Center vertically and horizontally */
   display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
+  margin-top: 10%;
+  padding: 15px;
 }
 
 .change-card {

@@ -31,18 +31,7 @@ mat-accordion {
     opacity: 1;
 }
 
-#btnPagination {
+mat-paginator{
     display: flex;
     justify-content: center;
-    margin-top: 50px;
-}
-
-
-#nextP {
-    min-width: 111px;
-    margin-left: 10vw;
-}
-
-#previousP {
-min-width: 111px;
 }

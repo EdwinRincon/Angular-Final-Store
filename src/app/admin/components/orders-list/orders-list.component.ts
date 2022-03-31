@@ -1,7 +1,10 @@
-import { Component, Renderer2, Inject, AfterViewInit } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import { Component, AfterViewInit, ViewChild } from '@angular/core';
 import { OrdersService } from '@core/service/orders/orders.service';
 import Swal from 'sweetalert2';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import { Orders } from '@core/models/orders.model';
 
 @Component({
   selector: 'app-orders-list',
@@ -10,71 +13,34 @@ import Swal from 'sweetalert2';
 })
 export class OrdersListComponent implements AfterViewInit {
 
-  orders = [];
-
-  // QueryParams
-  ord: string;
-  ascDesc: number;
-  like: string;
-  limit: number;
-  // search
-  texto: string;
-  // numero totla de registros en clientes
-  nTotalOrders: number;
-    // loading message
-    showLoadingSpinner = true;
-
   displayedColumns: string[] = ['id_order', 'payer_id', 'create_time', 'actions'];
+  dataSource: MatTableDataSource<Orders>;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+  // QueryParams
+  search: string;
+  // loading message
+  showLoadingSpinner = true;
 
-  constructor(private ordersService: OrdersService,
-              private renderer2: Renderer2,
-              @Inject(DOCUMENT) private document: Document) {
-    this.ord = 'payer_id';
-    this.ascDesc = 0;
-    this.like = null;
-    this.limit = 0;
-}// inicializo los query para hacer el fetch
+
+  constructor(private ordersService: OrdersService) {
+    this.search = '';
+  }
 
   ngAfterViewInit() {
-    this.fetchOrders(0); // todas las ordenes
-    this.numeroTotalOrders(); // number
-  }
-  // N Ordenes para la paginacion
-  numeroTotalOrders() {
-    this.ordersService.getNRegistrosOrders().subscribe(nTotal => {
-      this.nTotalOrders = nTotal;
-    });
+    this.fetchOrders();
   }
 
-  paginacion(elementos: number) {
-    if (elementos < 9) {
-    this.renderer2.setStyle(this.document.getElementById('nextO'), 'display', 'none');
-    } else {
-    this.renderer2.setStyle(this.document.getElementById('nextO'), 'display', 'block');
-    }
-    // oculta los botones o los muestra si estan al final del limite de registros
-    if (this.limit <= 0) {
-      this.renderer2.setStyle(this.document.getElementById('previousO'), 'display', 'none');
-    } else {
-      this.renderer2.setStyle(this.document.getElementById('previousO'), 'display', 'block');
-    }
-  }
-  // traer array de orders
-  fetchOrders(limit: number) {
-    this.limit += limit;
-
+  fetchOrders() {
     // spin mientras carga los datos
     this.showLoadingSpinner = true;
-    // desaparece la paginacion mientras cargan  los datos
-    this.renderer2.setStyle(this.document.getElementById('nextO'), 'display', 'none');
-    this.renderer2.setStyle(this.document.getElementById('previousO'), 'display', 'none');
-
-    this.ordersService.getAllOrders(this.ord, this.ascDesc, this.like, this.limit)
-    .subscribe(orders => {
-      this.showLoadingSpinner = false;
-      this.orders = orders;
-      this.paginacion(orders.length);
-    });
+    this.ordersService.getAllOrders(this.search)
+      .subscribe(ordenes => {
+        this.showLoadingSpinner = false;
+        this.dataSource = new MatTableDataSource(ordenes);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+      });
   }
 
   deleteOrder(idOrder: string) {
@@ -97,22 +63,19 @@ export class OrdersListComponent implements AfterViewInit {
             'El registro se ha eliminado',
             'success'
           );
-          this.limit = 0;
-          this.fetchOrders(0);
+          this.fetchOrders();
         });
       }
     });
   }
+
   // filtro de busqueda
-  search() {
-    if (this.texto.length > 0) {
-      this.like = this.texto;
-      this.limit = 0;
-      this.fetchOrders(0);
+  searchFilter() {
+    if (this.search.length > 0) {
+      this.fetchOrders();
     } else {
-      this.like = null;
-      this.limit = 0;
-      this.fetchOrders(0);
+      this.search = '';
+      this.fetchOrders();
     }
   }
 

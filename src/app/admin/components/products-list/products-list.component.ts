@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, Inject, Renderer2, ViewChild } from '@angular/core';
+import { Component, AfterViewInit, ViewChild } from '@angular/core';
 import { ProductsService } from '@core/service/products/products.service';
 import { AngularFireStorage } from '@angular/fire/storage';
 import Swal from 'sweetalert2';
@@ -19,14 +19,9 @@ export class ProductsListComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   // QueryParams
-  ord: string;
   ascDesc: string;
-  like: string;
+  search: string;
   category: string;
-  // search
-  texto: string;
-  // numero total de registros en productos
-  nTotalProductos: number;
   // loading message
   showLoadingSpinner = true;
 
@@ -35,20 +30,18 @@ export class ProductsListComponent implements AfterViewInit {
     private productsService: ProductsService,
     private afs: AngularFireStorage) {
     this.ascDesc = 'asc';
-    this.like = '';
+    this.search = '';
     this.category = undefined;
   }// inicializo los query para hacer el fetch
 
   ngAfterViewInit() {
-    this.fetchProducts(0); // todos los productos
-    this.numeroTotalProductos(); // number
+    this.fetchProducts(); // todos los productos
   }
 
-  fetchProducts(desde: number) {
-
+  fetchProducts() {
     // spin mientras carga los datos
     this.showLoadingSpinner = true;
-    this.productsService.getAllProducts(this.ascDesc, this.category, this.like, desde)
+    this.productsService.getAllProducts(this.ascDesc, this.category, this.search, 0, 0)
       .subscribe(productos => {
         this.showLoadingSpinner = false;
         this.dataSource = new MatTableDataSource(productos);
@@ -57,12 +50,6 @@ export class ProductsListComponent implements AfterViewInit {
       });
   }
 
-  // N Productos para la paginacion
-  numeroTotalProductos() {
-    this.productsService.getNRegistrosProduct().subscribe(nTotal => {
-      this.nTotalProductos = nTotal;
-    });
-  }
 
   deleteProduct(name: string) {
     // pregunta primero si está seguro de eliminar
@@ -90,10 +77,10 @@ export class ProductsListComponent implements AfterViewInit {
             icon: 'success',
             title: 'Producto eliminado'
           });
-          this.fetchProducts(0);
+          this.fetchProducts();
           this.afs.ref('images/' + name).delete().toPromise().then(() => {
             // File deleted successfully
-            console.log('IMAGEN ELIMINADA');
+            console.log('eliminado');
           }).catch((error) => {
             // Uh-oh, an error occurred!
             console.log('error', error.message);
@@ -105,13 +92,12 @@ export class ProductsListComponent implements AfterViewInit {
   }
 
   // filtro de busqueda
-  search() {
-    if (this.texto.length > 0) {
-      this.like = this.texto;
-      this.fetchProducts(0);
+  searchFilter() {
+    if (this.search.length > 0) {
+      this.fetchProducts();
     } else {
-      this.like = '';
-      this.fetchProducts(0);
+      this.search = '';
+      this.fetchProducts();
     }
   }
 }

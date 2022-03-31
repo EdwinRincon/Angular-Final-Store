@@ -8,8 +8,8 @@
       <button class="w3-btn w3-indigo" mat-list-item routerLink="../home">HOME</button>
       <a mat-list-item routerLink="/admin/productos">Productos</a>
       <a mat-list-item routerLink="/admin/clientes">Clientes</a>
-      <a mat-list-item routerLink="/admin/orders">Ordenes</a>
-      <a mat-list-item routerLink="/admin/ordersproducto">Ventas</a>
+      <a mat-list-item routerLink="/admin/ordenes">Ordenes</a>
+      <a mat-list-item routerLink="/admin/ordenesProductos">Ventas</a>
       <button class="w3-btn w3-red" mat-list-item (click)="logout()">SALIR</button>
     </mat-nav-list>
   </mat-sidenav>
@@ -23,7 +23,7 @@
         *ngIf="isHandset$ | async">
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
-        <span>FINAL-STORE</span> <p> {{hora | async}} </p>
+        <span>FINAL-STORE</span>
     </mat-toolbar>
     <!-- Add Content Here -->
     <router-outlet></router-outlet>

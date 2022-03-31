@@ -16,9 +16,9 @@ export class ProductsService {
   }
 
 
-  getAllProducts(ascDesc: string, category: string, like: string, desde: number) {
+  getAllProducts(ascDesc: string, category: string, search: string, page: number, skip: number) {
     // tslint:disable-next-line: max-line-length
-    return this.http.get<Product[]>(`${environment.url_api}/productos?category=${category}&search=${like}&ordenar=${ascDesc}&desde=${desde}`, { headers: this.headers }).pipe(
+    return this.http.get<Product[]>(`${environment.url_api}/productos?category=${category}&search=${search}&ordenar=${ascDesc}&page=${page}&skip=${skip}`, { headers: this.headers }).pipe(
       catchError(this.handleError)
     );
   }

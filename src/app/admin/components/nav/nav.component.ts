@@ -19,10 +19,6 @@ export class NavComponent {
       map(result => result.matches),
       shareReplay()
     );
-  // hora actual en el header
-  hora = new Observable<string>((observer: Observer<string>) => {
-    setInterval(() => observer.next(new Date().toLocaleString()), 1000);
-  });
 
   constructor(
     private breakpointObserver: BreakpointObserver,

@@ -42,15 +42,15 @@ const routes: Routes = [
         component: FormClienteComponent
       },
       {
-        path: 'orders',
+        path: 'ordenes',
         component: OrdersListComponent
       },
       {
-        path: 'ordersproducto',
+        path: 'ordenesProductos',
         component: OrdersproductoListComponent
       },
       {
-        path: 'ordersproducto/edit/:id_order/:name',
+        path: 'ordenesProductos/edit/:id_order/:name',
         component: OrdersproductoEditComponent
       }
     ]

@@ -29,7 +29,7 @@
         </mat-form-field>
           <mat-form-field class="col-xs-12 col-sm-6 col-md-3 col-lg-6">
             <mat-label>Buscar...</mat-label>
-              <input  matInput autocomplete="off" type="search" (keyup)="search()" [(ngModel)]="texto">
+              <input  matInput autocomplete="off" type="search" (keyup)="searchFilter()" [(ngModel)]="search">
           </mat-form-field>
       </mat-list>
     </ng-template>
@@ -41,9 +41,5 @@
 <div class="product-grid">
   <app-product *ngFor="let producto of productos"  [producto]="producto"></app-product>
 </div>
-<!-- Botones Paginacion Productos -->
-<div id="btnPagination">
-    <button (click)="fetchProducts(-9)" mat-raised-button color="warn" id="previousP"><mat-icon>arrow_left</mat-icon>Previous</button>
-    <button (click)="fetchProducts(9)" mat-raised-button color="warn" id="nextP">Next<mat-icon>arrow_right</mat-icon></button>
-</div>
+<mat-paginator [pageSizeOptions]="[6, 9, 12]" (page)="pageEvent = getServerData($event)"></mat-paginator>
 <button id="upButton" mat-mini-fab color="warn" (click)="toTop()" aria-label="up"><mat-icon>expand_less</mat-icon></button>

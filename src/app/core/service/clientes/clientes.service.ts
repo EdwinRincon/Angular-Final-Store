@@ -13,9 +13,9 @@ export class ClientesService {
 
   constructor(private http: HttpClient) { }
 
-  getAllClientes(ascDesc: string, like: string, desde: number) {
+  getAllClientes(ascDesc: string, search: string) {
     // tslint:disable-next-line: max-line-length
-    return this.http.get<Clientes[]>(`${environment.url_api}/clientes?search=${like}&ordenar=${ascDesc}&desde=${desde}`).pipe(
+    return this.http.get<Clientes[]>(`${environment.url_api}/clientes?search=${search}&ordenar=${ascDesc}`).pipe(
       catchError(this.handleError)
     );
   }

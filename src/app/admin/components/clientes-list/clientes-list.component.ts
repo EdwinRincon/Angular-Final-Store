@@ -25,42 +25,27 @@ export class ClientesListComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   // QueryParams
-  ord: string;
   ascDesc: string;
-  like: string;
-  category: string;
-  // search
-  texto: string;
-  // numero total de registros en productos
-  nTotalClientes: number;
+  search: string;
   // loading message
   showLoadingSpinner = true;
 
   constructor(private clientesService: ClientesService) {
     this.ascDesc = 'asc';
-    this.like = null;
+    this.search = '';
   }// inicializo los query para hacer el fetch
 
   ngAfterViewInit() {
-    this.fetchClientes(0); // todos los clientes
-    this.numeroTotalClientes(); // number
-  }
-
-  // N Clientes para la paginacion
-  numeroTotalClientes() {
-    this.clientesService.getNRegistrosCliente().subscribe(nTotal => {
-      this.nTotalClientes = nTotal;
-    });
+    this.fetchClientes(); // todos los clientes
   }
 
   // traer array de clientes
-  fetchClientes(desde: number) {
-
+  fetchClientes() {
     // spin mientras carga los datos
     this.showLoadingSpinner = true;
     // ascDesc: string, like: string, desde: number
     this.clientesService
-      .getAllClientes(this.ascDesc, this.like, desde)
+      .getAllClientes(this.ascDesc, this.search)
       .subscribe((clientes) => {
         this.showLoadingSpinner = false;
         this.dataSource = new MatTableDataSource(clientes);
@@ -89,20 +74,19 @@ export class ClientesListComponent implements AfterViewInit {
             'El registro se ha eliminado',
             'success'
           );
-          this.fetchClientes(0);
+          this.fetchClientes();
         });
       }
     });
   }
 
   // filtro de busqueda
-  search() {
-    if (this.texto.length > 0) {
-      this.like = this.texto;
-      this.fetchClientes(0);
+  searchFilter() {
+    if (this.search.length > 0) {
+      this.fetchClientes();
     } else {
-      this.like = '';
-      this.fetchClientes(0);
+      this.search = '';
+      this.fetchClientes();
     }
   }
 }

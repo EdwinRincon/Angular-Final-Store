@@ -13,37 +13,31 @@ export class OrdersproductoService {
   constructor(private http: HttpClient) { }
 
 
-  getAllOrdersProducto(ord: string, ascDesc: number, like: string, limit: number) {
+  getAllOrdersProducto(ascDesc: string, search: string) {
     // tslint:disable-next-line: max-line-length
-    return this.http.get<Ordersproducto[]>(`${environment.url_api}/ordersproducto?search=${like}&ordenacion=${ord}&ascDesc=${ascDesc}&limit=${limit}`).pipe(
+    return this.http.get<Ordersproducto[]>(`${environment.url_api}/ordenesProductos?search=${search}&ordenar=${ascDesc}`).pipe(
       catchError(this.handleError)
     );
   }
 
-  getOrdersProducto(idOrder: string, idProduct: string) {
-    return this.http.get<Ordersproducto>(`${environment.url_api}/ordersproducto/id/${idOrder}/${idProduct}`).pipe(
+  getOrdersProducto(idOrder: string, name: string) {
+    return this.http.get<Ordersproducto>(`${environment.url_api}/ordenesProductos/${idOrder}/${name}`).pipe(
       catchError(this.handleError)
     );
   }
 
   createOrdersProducto(orderProducto: Ordersproducto) {
-    return this.http.post(`${environment.url_api}/ordersproducto/`, orderProducto);
+    return this.http.post(`${environment.url_api}/ordenesProductos`, orderProducto);
   }
 
-  updateOrdersProducto(idOrder: string, idProduct: string, changes: Partial<Ordersproducto>) {
-    return this.http.put(`${environment.url_api}/ordersproducto/${idOrder}/${idProduct}`, changes).pipe(
+  updateOrdersProducto(idOrder: string, name: string, changes: Partial<Ordersproducto>) {
+    return this.http.put(`${environment.url_api}/ordenesProductos/${idOrder}/${name}`, changes).pipe(
       catchError(this.handleError)
     );
   }
 
-  deleteOrdersProducto(idOrder: string, idProduct: string) {
-    return this.http.delete(`${environment.url_api}/ordersproducto/${idOrder}/${idProduct}`).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  getNRegistrosOrdesProducto() {
-    return this.http.get<number>(`${environment.url_api}/ordersproducto/total/n`).pipe(
+  deleteOrdersProducto(idOrder: string, name: string) {
+    return this.http.delete(`${environment.url_api}/ordenesProductos/${idOrder}/${name}`).pipe(
       catchError(this.handleError)
     );
   }

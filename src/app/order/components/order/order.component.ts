@@ -1,9 +1,12 @@
 import { Component, ViewChild, ElementRef, ErrorHandler, AfterViewInit } from '@angular/core';
 import { Product } from '@core/models/product.model';
 import { CartService } from '@core/service/cart.service';
+import { OrdersService } from '@core/service/orders/orders.service';
+import { OrdersproductoService } from '@core/service/ordersproducto/ordersproducto.service';
 import { Observable } from 'rxjs';
 import { environment } from '@environments/environment';
 import Swal from 'sweetalert2';
+import { Ordersproducto } from '@core/models/ordersproducto.model';
 declare var paypal;
 
 
@@ -16,9 +19,12 @@ export class OrderComponent implements AfterViewInit {
 
   products$: Observable<Product[]>;
   arrayFinal: Product[] = [];
+  arrayStorage: Product[];
   public totalAPagar: number;
 
-  constructor(private cartService: CartService) {
+  constructor(private cartService: CartService,
+    private ordersService: OrdersService,
+    private ordersproductoService: OrdersproductoService) {
     this.products$ = this.cartService.cart$;
     this.totalAPagar = this.cartService.totalAPagar;
   }
@@ -30,23 +36,21 @@ export class OrderComponent implements AfterViewInit {
   ngAfterViewInit() {
     localStorage.clear();
     let totalAPagar = this.totalAPagar;
-    let arrayStorage: Product[];
-    // para poder actualizar el array de productos y el total de dinero a pagar
-    // antes de pulsar el boton de paypal y tener los datos correctos
-    document.getElementById('capsula').addEventListener('mouseenter', () => {
-      this.products$.subscribe(arrayToBuy => {
-        this.arrayFinal = arrayToBuy;
-        this.arrayFinal = this.CartRepeatDelete(this.arrayFinal);
-        localStorage.setItem('ordersproducto', JSON.stringify(this.arrayFinal));
-        arrayStorage = JSON.parse(localStorage.getItem('ordersproducto'));
-      });
-      totalAPagar = this.totalAPagar;
-    });
+
     // Boton de PAYPAL
     paypal.Buttons({
       style: {
         color: 'blue',
       }, createOrder: (data, actions) => {
+        // para poder actualizar el array de productos y el total de dinero a pagar
+        // antes de pulsar el boton de paypal y tener los datos correctos
+        this.products$.subscribe(arrayToBuy => {
+          this.arrayFinal = arrayToBuy;
+          this.arrayFinal = this.CartRepeatDelete(this.arrayFinal);
+          localStorage.setItem('ordenesProductos', JSON.stringify(this.arrayFinal));
+          this.arrayStorage = JSON.parse(localStorage.getItem('ordenesProductos'));
+        });
+        totalAPagar = this.totalAPagar;
         // This function sets up the details of the transaction, including the amount
         return actions.order.create({
           purchase_units: [{
@@ -75,50 +79,38 @@ export class OrderComponent implements AfterViewInit {
               city: details.purchase_units[0].shipping.address.admin_area_1
             })
           }).then(async (responseCliente) => {
-            // si los datos del cliente se han guardado, entonces se guardarán los datos de la orden
+            // si los datos del cliente se han guardado, entonces se guardarán los datos de la orden            
             if (responseCliente.ok) {
               let createTime: string;
               createTime = details.purchase_units[0].payments.captures[0].create_time;
+              const order = {
+                id_order: details.id,
+                payer_id: details.payer.payer_id,
+                create_time: createTime.slice(0, 10)
+              }
               try {
-                const responseOrder = await fetch(`${environment.url_api}/orders`, {
-                  method: 'post',
-                  headers: {
-                    'content-type': 'application/json'
-                  },
-                  body: JSON.stringify({
+                await this.ordersService.createOrder(order).toPromise();
+                let ordenesProductos: Ordersproducto;
+                for (let index = 0; index < this.arrayStorage.length; index++) {
+                  ordenesProductos = {
+                    name: this.arrayStorage[index].name,
                     id_order: details.id,
                     payer_id: details.payer.payer_id,
-                    create_time: createTime.slice(0, 10)
-                  })
-                });
-                if (responseOrder.ok) {
-                  Swal.fire({
-                    title: 'Compra Recibida!',
-                    html: 'Deseamos volver a verte! ' + details.payer.name.given_name +
-                      '<br></br>Guarda tu codigo de orden<br></br>' + details.id,
-                    icon: 'success',
-                    confirmButtonText: 'Aceptar'
-                  });
-                  // Guardar los productos comprados con su cantidad e ID de orden
-                  // tslint:disable-next-line: prefer-for-of
-                  for (let index = 0; index < arrayStorage.length; index++) {
-                    await fetch(`${environment.url_api}/ordersproducto`, {
-                      method: 'post',
-                      headers: { 'content-type': 'application/json' },
-                      body: JSON.stringify({
-                        id_order: details.id,
-                        payer_id: details.payer.payer_id,
-                        cantidad: arrayStorage[index].quantity
-                      })
-                    });
+                    cantidad: this.arrayStorage[index].quantity
                   }
+                  await this.ordersproductoService.createOrdersProducto(ordenesProductos).toPromise();
                 }
+                Swal.fire({
+                  title: 'Compra Recibida!',
+                  html: 'Deseamos volver a verte! ' + details.payer.name.given_name +
+                    '<br></br>Guarda tu codigo de orden<br></br>' + details.id,
+                  icon: 'success',
+                  confirmButtonText: 'Aceptar'
+                });
               } catch (error) {
                 Swal.fire({
                   title: 'Error!',
-                  html: '<br></br>Ha habido un problema,<br></br>' +
-                    'ponte en Contacto para terminar tu compra<br></br>' +
-                    'recuerda que hemos recibido ya tu pago.',
+                  html: error,
                   icon: 'error',
                   confirmButtonText: 'Aceptar'
                 });
@@ -127,7 +119,7 @@ export class OrderComponent implements AfterViewInit {
             } else {
               Swal.fire({
                 title: 'Error!',
-                html: 'backend status: ' + responseCliente.status,
+                html: 'Tus datos no se han podido guardar, tu orden ha sido cancelada, por favor intentalo de nuevo',
                 icon: 'error',
                 confirmButtonText: 'Aceptar'
               });

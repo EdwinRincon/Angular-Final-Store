@@ -14,38 +14,32 @@ export class OrdersService {
   constructor(private http: HttpClient) { }
 
   createOrder(order: Orders) {
-    return this.http.post(`${environment.url_api}/orders/`, order).pipe(
+    return this.http.post(`${environment.url_api}/ordenes/`, order).pipe(
       catchError(this.handleError)
     );
   }
 
-  getAllOrders(ord: string, ascDesc: number, like: string, limit: number) {
+  getAllOrders(search= '') {
     // tslint:disable-next-line: max-line-length
-    return this.http.get<Orders[]>(`${environment.url_api}/orders?search=${like}&ordenacion=${ord}&ascDesc=${ascDesc}&limit=${limit}`).pipe(
+    return this.http.get<Orders[]>(`${environment.url_api}/ordenes?search=${search}`).pipe(
       catchError(this.handleError)
     );
   }
 
   getOrder(idOrder: string) {
-    return this.http.get<Orders>(`${environment.url_api}/orders/id/${idOrder}`).pipe(
+    return this.http.get<Orders>(`${environment.url_api}/ordenes/id/${idOrder}`).pipe(
       catchError(this.handleError)
     );
   }
 
   updateOrder(idOrder: string, changes: Partial<Orders>) {
-    return this.http.put(`${environment.url_api}/orders/${idOrder}`, changes).pipe(
+    return this.http.put(`${environment.url_api}/ordenes/${idOrder}`, changes).pipe(
       catchError(this.handleError)
     );
   }
 
   deleteOrder(idOrder: string) {
-    return this.http.delete(`${environment.url_api}/orders/id/${idOrder}`).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  getNRegistrosOrders() {
-    return this.http.get<number>(`${environment.url_api}/orders/total/n`).pipe(
+    return this.http.delete(`${environment.url_api}/ordenes/${idOrder}`).pipe(
       catchError(this.handleError)
     );
   }
